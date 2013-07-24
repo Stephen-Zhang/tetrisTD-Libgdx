@@ -14,17 +14,23 @@ public class TestTower extends Tower {
 	public int key = Input.Keys.T;
 	
 	
-	private float[] shape =new float[]{ 
+	private Polygon shape = new Polygon(new float[]{ 
 		0, 0, 
-		32, 0,
 		64, 0,
-		64, 32,
 		64, 64,
 		32, 64,
 		32, 32,
 		0, 32,
-	};
+	});
 
+	private Polygon range = new Polygon(new float[]{
+		-32, -32,
+		96, -32,
+		96, 96,
+		0, 96,
+		0, 64,
+		-32, 64,
+	});
 	
 	private String name = "Test Tower";
 	private int gold = 100;
@@ -64,7 +70,7 @@ public class TestTower extends Tower {
 
 	@Override
 	public float[] getShape(int[] mouseLoc) {
-		float[] retVal = shape.clone();
+		float[] retVal = shape.getVertices().clone();
 		for (int i = 0; i < retVal.length; i++ ) {
 			if (i % 2 == 0) {
 				//Even and 0
@@ -77,8 +83,17 @@ public class TestTower extends Tower {
 	}
 
 	@Override
-	public Polygon getRange() {
-		return null;
+	public float[] getRange(int[] mouseLoc) {
+		float[] retVal = range.getVertices().clone();
+		for (int i = 0; i < retVal.length; i++ ) {
+			if (i % 2 == 0) {
+				//Even and 0
+				retVal[i] += mouseLoc[0];
+			} else {
+				retVal[i] = retVal[i] + mouseLoc[1];
+			}
+		}
+		return retVal;
 	}
 
 	@Override

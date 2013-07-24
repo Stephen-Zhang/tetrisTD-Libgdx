@@ -92,10 +92,12 @@ public class GameScreen implements Screen {
 		//Draw mouse buildings
 		if (game.player.holding != TowerType.NULL) {
 			ShapeRenderer drawShapes = new ShapeRenderer();
-			drawShapes.setColor(Color.BLUE);
+			drawShapes.setColor(Color.GREEN);
 			
 			drawShapes.begin(ShapeType.Line);
 			drawShapes.polygon(game.player.getTowerShape());
+			drawShapes.setColor(Color.BLUE);
+			drawShapes.polygon(game.player.getTowerRange());
 			drawShapes.end();
 		}
 

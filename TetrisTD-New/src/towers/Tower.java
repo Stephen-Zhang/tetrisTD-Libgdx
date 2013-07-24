@@ -28,7 +28,7 @@ public abstract class Tower {
 	
 	public abstract int getCost();
 	public abstract float[] getShape(int[] mouseLoc);
-	public abstract Polygon getRange();
+	public abstract float[] getRange(int[] mouseLoc);
 	public abstract String getDescript();
 	
 	public abstract void acquireTargets(ArrayList<Enemy> enemies, HashMap<Enemy, ArrayList<Tower>> addTtoE, HashMap<Enemy, ArrayList<Tower>> remTfromE, HashMap<Tower, ArrayList<Enemy>> addEtoT, HashMap<Tower, ArrayList<Enemy>> remEfromT);

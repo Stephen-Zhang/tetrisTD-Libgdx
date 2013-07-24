@@ -77,4 +77,14 @@ public class Player {
 		}
 		return null;
 	}
-}
+	
+	public float[] getTowerRange() {
+		// TODO Auto-generated method stub
+		switch(holding) {
+		case TEST_TOWER:
+			return new TestTower().getRange(this.currMouseLoc);
+		case NULL:
+			return null;
+		}
+		return null;
+	}}
