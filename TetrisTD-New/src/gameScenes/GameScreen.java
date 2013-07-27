@@ -12,13 +12,14 @@ import util.MyInputProcessor;
 import util.utilityFunctions;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
@@ -92,12 +93,20 @@ public class GameScreen implements Screen {
 		//Draw mouse buildings
 		if (game.player.holding != TowerType.NULL) {
 			ShapeRenderer drawShapes = new ShapeRenderer();
-			drawShapes.setColor(Color.GREEN);
+
+			float[] shapeVertices = game.player.getTowerShape();
+			
 			
 			drawShapes.begin(ShapeType.Line);
-			drawShapes.polygon(game.player.getTowerShape());
-			drawShapes.setColor(Color.BLUE);
-			drawShapes.polygon(game.player.getTowerRange());
+			if (canPutDown(shapeVertices)) {
+				drawShapes.setColor(Color.GREEN);
+				drawShapes.polygon(shapeVertices);
+				drawShapes.setColor(Color.BLUE);
+				drawShapes.polygon(game.player.getTowerRange());
+			} else {
+				drawShapes.setColor(Color.RED);
+				drawShapes.polygon(shapeVertices);
+			}
 			drawShapes.end();
 		}
 
@@ -133,6 +142,28 @@ public class GameScreen implements Screen {
 		}
 		
 		//Check for keyboard events
+	}
+
+	private boolean canPutDown(float[] shapeVertices) {
+		// TODO Auto-generated method stub
+		boolean ret = true;
+		TiledMapTileLayer tiledLayer = (TiledMapTileLayer)map.getLayers().get(0);
+		for (int i = 0; i < shapeVertices.length-1; i+=2) {
+			//Normalized X and Y into the center of each tile.
+			int x = (int)(shapeVertices[i]/32);
+			int y = (int)(shapeVertices[i+1]/32);
+			
+			System.out.println("X: "+x+", Y: "+y);
+			
+			MapProperties tProps = tiledLayer.getCell(x, y).getTile().getProperties();
+			if (tProps.containsKey("buildable")) {
+				System.out.println(((String)tProps.get("buildable")).equals("no"));
+				if (tProps.get("buildable").equals("no")) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	@Override
