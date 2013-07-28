@@ -14,6 +14,8 @@ public abstract class Level {
 	public int[] startingLoc = new int[2];
 	public Array<Point> waypts = new Array<Point>();
 	public boolean done = false;
+	
+	public boolean sendEarly = false;
 
 	public boolean nextWaveAvail() {
 		return (waves.size > 0) ? true : false;

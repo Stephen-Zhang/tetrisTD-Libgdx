@@ -73,7 +73,6 @@ public class GameScreen implements Screen {
 		totalTime += Gdx.graphics.getDeltaTime()*1000;
 		this.game.getCurrLevel().updateLevelTime(delta*1000);		
 		
-
 		/*************************************************************************
 		*
 		**DRAWING STARTS HERE
@@ -96,6 +95,26 @@ public class GameScreen implements Screen {
 			}
 		}
 		
+		//Send Early Message
+		if (!this.game.getCurrLevel().nextWaveAvail() && this.game.enemies.size == 0) {
+			this.game.getCurrLevel().done = true;
+			List<String> lvlComplete = utilityFunctions.wrap("You finished this level! For now, theres nothing else to do. Congratulations!", game.font, 150);
+			Iterator<String> iter = lvlComplete.iterator();
+			int height = 668;
+			while (iter.hasNext()) {
+				game.font.draw(game.batch, iter.next(), 840, height);
+				height -= game.font.getLineHeight();
+			}
+		} else if (this.game.getCurrLevel().sendEarly) {
+			List<String> sendEarlyMsg = utilityFunctions.wrap("You finished this wave! You may send the next wave early if you press the key P on the keyboard.", game.font, 150);
+			Iterator<String> iter = sendEarlyMsg.iterator();
+			int height = 668;
+			while (iter.hasNext()) {
+				game.font.draw(game.batch, iter.next(), 840, height);
+				height -= game.font.getLineHeight();
+			}
+		}
+		
 
 		//Draw mouse buildings
 		if (game.player.holding != TowerType.NULL) {
@@ -104,8 +123,9 @@ public class GameScreen implements Screen {
 			float[] shapeVertices = game.player.getTowerShape();
 			
 			
-			drawShapes.begin(ShapeType.Line);
 			this.game.player.canPlaceTower = canPutDown(shapeVertices);
+			
+			drawShapes.begin(ShapeType.Line);
 			if (this.game.player.canPlaceTower && this.game.player.gold >= this.game.player.getCostOfTower()) {
 				drawShapes.setColor(Color.GREEN);
 				drawShapes.polygon(shapeVertices);
@@ -115,7 +135,13 @@ public class GameScreen implements Screen {
 				drawShapes.setColor(Color.RED);
 				drawShapes.polygon(shapeVertices);
 			}
+			for (Tower t : this.game.towers) {
+				drawShapes.setColor(Color.WHITE);
+				System.out.println(t.getShape(t.getCenter())[0]);
+				drawShapes.polygon(t.getShape(t.getCenter()));
+			}
 			drawShapes.end();
+			drawShapes.dispose();
 		}
 
 		//Enemies
@@ -149,7 +175,9 @@ public class GameScreen implements Screen {
 			this.game.getCurrLevel().getNextWave();
 		}
 		if (!this.game.getCurrLevel().currWave.nextEnemyAvail() && this.game.enemies.size == 0) {
-			System.out.println("Send next wave code here");
+			this.game.getCurrLevel().sendEarly = true;
+		} else {
+			this.game.getCurrLevel().sendEarly = false;
 		}
 		
 		for (Enemy e: this.game.enemies) {

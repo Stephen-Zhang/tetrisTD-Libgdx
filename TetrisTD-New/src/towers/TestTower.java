@@ -23,12 +23,12 @@ public class TestTower extends Tower {
 	});
 	
 	private float[] offset = new float[] {
-		1, 1,
-		-1, 1,
-		-1, -1,
-		1, -1,
-		1, -1,
-		1, -1,
+		2, 2,
+		-2, 2,
+		-2, -2,
+		2, -2,
+		2, -2,
+		2, -2,
 	};
 
 	private Polygon range = new Polygon(new float[]{
@@ -99,7 +99,7 @@ public class TestTower extends Tower {
 				//Even and 0
 				retVal[i] += mouseLoc[0];
 			} else {
-				retVal[i] = retVal[i] + mouseLoc[1];
+				retVal[i] += mouseLoc[1];
 			}
 		}
 		return retVal;

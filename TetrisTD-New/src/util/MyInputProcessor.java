@@ -4,6 +4,8 @@ import gameScenes.tetrisTD;
 import towers.TestTower;
 import towers.TowerType;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 
 public class MyInputProcessor implements InputProcessor {
@@ -22,7 +24,10 @@ public class MyInputProcessor implements InputProcessor {
 
 	@Override
 	public boolean keyUp(int keycode) {
-		// TODO Auto-generated method stub
+		if (this.game.player.holding != TowerType.NULL && keycode == Input.Keys.ESCAPE) {
+			this.game.player.holding = TowerType.NULL;
+		}
+		
 		return false;
 	}
 
@@ -30,6 +35,9 @@ public class MyInputProcessor implements InputProcessor {
 	public boolean keyTyped(char character) {
 		if (character == 't') {
 			game.player.holding = TowerType.TEST_TOWER;
+		}
+		if (this.game.getCurrLevel().sendEarly && !this.game.getCurrLevel().done && character == 'p') {
+			this.game.getCurrLevel().getNextWave();
 		}
 		return false;
 	}
@@ -43,9 +51,17 @@ public class MyInputProcessor implements InputProcessor {
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		// TODO Auto-generated method stub
-		if (this.game.player.holding != TowerType.NULL && this.game.player.canPlaceTower && this.game.player.gold >= this.game.player.getCostOfTower()) {
-			this.game.player.gold -= this.game.player.getCostOfTower();
-			this.game.getTowers().add(this.game.player.makeNewTower());
+		if (button == Input.Buttons.LEFT) {
+			if (this.game.player.holding != TowerType.NULL && this.game.player.canPlaceTower && this.game.player.gold >= this.game.player.getCostOfTower()) {
+				this.game.player.gold -= this.game.player.getCostOfTower();
+				this.game.getTowers().add(this.game.player.makeNewTower());
+				this.game.player.holding = TowerType.NULL;
+			}
+		} else if (button == Input.Buttons.RIGHT) {
+			//For now, right clicking gets rid of the tower.
+			if (this.game.player.holding != TowerType.NULL) {
+				this.game.player.holding = TowerType.NULL;
+			}
 		}
 		return false;
 	}
