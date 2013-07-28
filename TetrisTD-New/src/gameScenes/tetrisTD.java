@@ -1,5 +1,6 @@
 package gameScenes;
 
+import levels.Level;
 import player.Player;
 import projectiles.Projectile;
 import towers.Tower;
@@ -20,7 +21,16 @@ public class tetrisTD extends Game {
 	protected DelayedRemovalArray<Enemy> enemies;
 	protected Array<Tower> towers;
 	protected DelayedRemovalArray<Projectile> bullets;
-	
+	private Level currLevel;
+
+	public Level getCurrLevel() {
+		return currLevel;
+	}
+
+	public void setCurrLevel(Level currLevel) {
+		this.currLevel = currLevel;
+	}
+
 	public Array<Projectile> getBullets() {
 		return bullets;
 	}

@@ -43,7 +43,8 @@ public class MyInputProcessor implements InputProcessor {
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		// TODO Auto-generated method stub
-		if (this.game.player.holding != TowerType.NULL && this.game.player.canPlaceTower) {
+		if (this.game.player.holding != TowerType.NULL && this.game.player.canPlaceTower && this.game.player.gold >= this.game.player.getCostOfTower()) {
+			this.game.player.gold -= this.game.player.getCostOfTower();
 			this.game.getTowers().add(this.game.player.makeNewTower());
 		}
 		return false;

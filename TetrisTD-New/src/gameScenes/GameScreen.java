@@ -50,11 +50,11 @@ public class GameScreen implements Screen {
 		Gdx.input.setInputProcessor(new MyInputProcessor(game));
 		
 		if (level == 1) {
-			currLevel = new LevelOne();
-			currLevel.getNextWave();
+			this.game.setCurrLevel(new LevelOne());
+			this.game.getCurrLevel().getNextWave();
 		}
 		
-		map = currLevel.getMap();
+		map = this.game.getCurrLevel().getMap();
 		cam = new OrthographicCamera();
 		cam.setToOrtho(false, 32, 24);
 		
@@ -71,9 +71,14 @@ public class GameScreen implements Screen {
 		
 		//Update time trackers
 		totalTime += Gdx.graphics.getDeltaTime()*1000;
-		currLevel.updateLevelTime(delta*1000);		
+		this.game.getCurrLevel().updateLevelTime(delta*1000);		
 		
-		//Draw all enemies and towers and bullets
+
+		/*************************************************************************
+		*
+		**DRAWING STARTS HERE
+		*
+		**************************************************************************/
 		game.batch.begin();
 		
 		//Draw Menu
@@ -101,7 +106,7 @@ public class GameScreen implements Screen {
 			
 			drawShapes.begin(ShapeType.Line);
 			this.game.player.canPlaceTower = canPutDown(shapeVertices);
-			if (this.game.player.canPlaceTower) {
+			if (this.game.player.canPlaceTower && this.game.player.gold >= this.game.player.getCostOfTower()) {
 				drawShapes.setColor(Color.GREEN);
 				drawShapes.polygon(shapeVertices);
 				drawShapes.setColor(Color.BLUE);
@@ -137,11 +142,14 @@ public class GameScreen implements Screen {
 
 		//Update the game
 			//Update the enemy spawns
-		if (currLevel.currWave.nextEnemyAvail() && currLevel.currWave.timeForNextEnemy(currLevel.getLevelTime())) {
-			this.game.enemies.add(currLevel.currWave.getNextEnemy());
+		if (this.game.getCurrLevel().currWave.nextEnemyAvail() && this.game.getCurrLevel().currWave.timeForNextEnemy(this.game.getCurrLevel().getLevelTime())) {
+			this.game.enemies.add(this.game.getCurrLevel().currWave.getNextEnemy());
 		}
-		if (currLevel.nextWaveAvail() && currLevel.timeForNextWave()) {
-			currLevel.getNextWave();
+		if (this.game.getCurrLevel().nextWaveAvail() && this.game.getCurrLevel().timeForNextWave()) {
+			this.game.getCurrLevel().getNextWave();
+		}
+		if (!this.game.getCurrLevel().currWave.nextEnemyAvail() && this.game.enemies.size == 0) {
+			System.out.println("Send next wave code here");
 		}
 		
 		for (Enemy e: this.game.enemies) {
