@@ -15,6 +15,7 @@ public class Player {
 	public ArrayList<TowerType> availTowers = new ArrayList<TowerType>();
 	
 	public int[] currMouseLoc = new int[2];
+	public boolean canPlaceTower = true;
 
 	public Player(int life) {
 		lives = life;
@@ -46,12 +47,15 @@ public class Player {
 	}
 
 	public Tower makeNewTower() {
-		double[] cent = {currMouseLoc[0], currMouseLoc[1]};
 		switch(holding) {
 		case TEST_TOWER: 
-			return new TestTower(cent);
+			return new TestTower(this.currMouseLoc);
 		case NULL: 
 			return null;
+		case TEST_AOE_TOWER:
+			break;
+		default:
+			break;
 		}
 		return null;
 	}
@@ -63,6 +67,10 @@ public class Player {
 			return new TestTower().getCost();
 		case NULL:
 			return 0;
+		case TEST_AOE_TOWER:
+			break;
+		default:
+			break;
 		}
 		return 0;
 	}
@@ -74,6 +82,10 @@ public class Player {
 			return new TestTower().getShape(this.currMouseLoc);
 		case NULL:
 			return null;
+		case TEST_AOE_TOWER:
+			break;
+		default:
+			break;
 		}
 		return null;
 	}
@@ -85,6 +97,10 @@ public class Player {
 			return new TestTower().getRange(this.currMouseLoc);
 		case NULL:
 			return null;
+		case TEST_AOE_TOWER:
+			break;
+		default:
+			break;
 		}
 		return null;
 	}}

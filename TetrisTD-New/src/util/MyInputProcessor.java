@@ -1,7 +1,8 @@
 package util;
 
-import towers.TowerType;
 import gameScenes.tetrisTD;
+import towers.TestTower;
+import towers.TowerType;
 
 import com.badlogic.gdx.InputProcessor;
 
@@ -42,6 +43,9 @@ public class MyInputProcessor implements InputProcessor {
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		// TODO Auto-generated method stub
+		if (this.game.player.holding != TowerType.NULL && this.game.player.canPlaceTower) {
+			this.game.getTowers().add(this.game.player.makeNewTower());
+		}
 		return false;
 	}
 

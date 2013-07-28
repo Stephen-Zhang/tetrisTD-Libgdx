@@ -6,6 +6,7 @@ import java.util.List;
 import levels.Level;
 import levels.LevelOne;
 import player.Player;
+import projectiles.Projectile;
 import towers.Tower;
 import towers.TowerType;
 import util.MyInputProcessor;
@@ -15,12 +16,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
 
@@ -37,11 +41,12 @@ public class GameScreen implements Screen {
 	
 	OrthographicCamera cam;
 	
-	public DelayedRemovalArray<Enemy> enemies;
-	public Array<Tower> towers;
-	
 	public GameScreen(final tetrisTD game, int level) {
+		Texture.setEnforcePotImages(false);
 		this.game = game;
+		this.game.enemies = new DelayedRemovalArray<Enemy>();
+		this.game.towers = new Array<Tower>();
+		this.game.bullets = new DelayedRemovalArray<Projectile>();
 		Gdx.input.setInputProcessor(new MyInputProcessor(game));
 		
 		if (level == 1) {
@@ -52,9 +57,6 @@ public class GameScreen implements Screen {
 		map = currLevel.getMap();
 		cam = new OrthographicCamera();
 		cam.setToOrtho(false, 32, 24);
-
-		enemies = new DelayedRemovalArray<Enemy>();
-		towers = new Array<Tower>();
 		
 		game.player = new Player(20, 100);
 	}
@@ -98,7 +100,8 @@ public class GameScreen implements Screen {
 			
 			
 			drawShapes.begin(ShapeType.Line);
-			if (canPutDown(shapeVertices)) {
+			this.game.player.canPlaceTower = canPutDown(shapeVertices);
+			if (this.game.player.canPlaceTower) {
 				drawShapes.setColor(Color.GREEN);
 				drawShapes.polygon(shapeVertices);
 				drawShapes.setColor(Color.BLUE);
@@ -111,27 +114,42 @@ public class GameScreen implements Screen {
 		}
 
 		//Enemies
-		for (Enemy e : enemies) {
-			float[] position = utilityFunctions.doubleToFloat(e.getPos());
-			game.batch.draw(e.sprite, position[0], position[1]);
+		for (Enemy e : this.game.enemies) {
+			game.batch.draw(e.sprite, e.getPos()[0], e.getPos()[1]);
 		}
-		game.batch.end();
 		
+		//Towers
+		for (Tower t : this.game.towers) {
+			game.batch.draw(new Texture(t.getSpritePath()), t.getCenter()[0], t.getCenter()[1]);
+		}
+		
+		//Bullets
+		for (Projectile p : this.game.bullets) {
+			game.batch.draw(p.sprite, p.pos[0], p.pos[1]);
+		}
+
+		/*************************************************************************
+		*
+		**DRAWING ENDS HERE
+		*
+		**************************************************************************/
+		game.batch.end();
+
 		//Update the game
 			//Update the enemy spawns
 		if (currLevel.currWave.nextEnemyAvail() && currLevel.currWave.timeForNextEnemy(currLevel.getLevelTime())) {
-			enemies.add(currLevel.currWave.getNextEnemy());
+			this.game.enemies.add(currLevel.currWave.getNextEnemy());
 		}
 		if (currLevel.nextWaveAvail() && currLevel.timeForNextWave()) {
 			currLevel.getNextWave();
 		}
 		
-		for (Enemy e: enemies) {
+		for (Enemy e: this.game.enemies) {
 			if ( e.arrivedAtDest() && e.nextDestExists() ) {
 				e.getNextDest();
 			}
 			if (e.success) {
-				enemies.removeValue(e, false);
+				this.game.enemies.removeValue(e, false);
 				if (game.player.lives > 0) {
 					game.player.lives--;
 				}
@@ -141,26 +159,54 @@ public class GameScreen implements Screen {
 			}
 		}
 		
-		//Check for keyboard events
+		for (Tower t: this.game.towers) {
+			t.acquireTargets(this.game.enemies);
+			t.fire(this.game.bullets);
+		}
+		
+		for (Projectile p : this.game.bullets) {
+			if (!this.game.enemies.contains(p.target, false)) {
+				this.game.bullets.removeValue(p, false);
+				continue;
+			}
+			p.updateMovement();
+			if (Intersector.overlapConvexPolygons(p.getHitbox(), p.target.getHitbox())) {
+				p.target.setCurrHealth(p.target.getCurrHealth() - p.damage);
+				if (p.target.getCurrHealth() < 0) {
+					//Dead
+					for (Tower t : p.target.towersAttacking) {
+						t.target.removeValue(p.target, false);
+					}
+					this.game.player.gold += p.target.bounty;
+					this.game.enemies.removeValue(p.target, false);
+				}
+				this.game.bullets.removeValue(p, false);
+			}
+		}
+
 	}
 
 	private boolean canPutDown(float[] shapeVertices) {
 		// TODO Auto-generated method stub
-		boolean ret = true;
 		TiledMapTileLayer tiledLayer = (TiledMapTileLayer)map.getLayers().get(0);
 		for (int i = 0; i < shapeVertices.length-1; i+=2) {
 			//Normalized X and Y into the center of each tile.
-			int x = (int)(shapeVertices[i]/32);
-			int y = (int)(shapeVertices[i+1]/32);
-			
-			System.out.println("X: "+x+", Y: "+y);
+			int x = (int)((shapeVertices[i])/32);
+			int y = (int)((shapeVertices[i+1])/32);
 			
 			MapProperties tProps = tiledLayer.getCell(x, y).getTile().getProperties();
 			if (tProps.containsKey("buildable")) {
-				System.out.println(((String)tProps.get("buildable")).equals("no"));
 				if (tProps.get("buildable").equals("no")) {
 					return false;
 				}
+			}
+		}
+		Polygon mouseShape = new Polygon(shapeVertices);
+		Polygon tempPolygon;
+		for (Tower t : this.game.towers) {
+			tempPolygon = new Polygon(t.getShape(t.getCenter()));
+			if (Intersector.overlapConvexPolygons(tempPolygon, mouseShape)) {
+				return false;
 			}
 		}
 		return true;

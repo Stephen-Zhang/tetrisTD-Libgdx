@@ -5,12 +5,30 @@ import java.awt.Point;
 import towers.Tower;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.DelayedRemovalArray;
 
 public abstract class Enemy {
 	protected double maxHealth;
 	protected double currHealth;
-	protected double[] pos = new double[2];
+	public double getMaxHealth() {
+		return maxHealth;
+	}
+
+	public void setMaxHealth(double maxHealth) {
+		this.maxHealth = maxHealth;
+	}
+
+	public double getCurrHealth() {
+		return currHealth;
+	}
+
+	public void setCurrHealth(double currHealth) {
+		this.currHealth = currHealth;
+	}
+
+	protected int[] pos = new int[2];
 	protected double[] dir = new double[2];
 
 	public boolean success = false;
@@ -20,7 +38,7 @@ public abstract class Enemy {
 	protected double walkSpeed = 1;
 	public Texture sprite;
 
-	public Array<Tower> towersAttacking = new Array<Tower>();
+	public DelayedRemovalArray<Tower> towersAttacking = new DelayedRemovalArray<Tower>();
 	public boolean alive = true;
 	public int bounty;
 	
@@ -70,7 +88,7 @@ public abstract class Enemy {
 		return dist;
 	}
 	
-	public double[] getPos() {
+	public int[] getPos() {
 		return pos;
 	}
 	
@@ -81,4 +99,5 @@ public abstract class Enemy {
 		pos[1] += dir[1]*walkSpeed;
 	}
 
+	public abstract Polygon getHitbox();	
 }

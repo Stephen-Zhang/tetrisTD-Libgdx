@@ -1,9 +1,9 @@
 package towers;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import projectiles.Projectile;
 
-import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.DelayedRemovalArray;
 
 import enemies.Enemy;
 
@@ -14,12 +14,13 @@ public abstract class Tower {
 	public int cooldown = 0;
 	public int[] iconLoc = new int[2];
 	
-	protected double[] center = new double[2];
+	protected int[] center = new int[2];
 	
 	protected static float[] shape;
 	protected static float[] range;
 	
-	public ArrayList<Enemy> target = new ArrayList<Enemy>();
+	public DelayedRemovalArray<Enemy> target = new DelayedRemovalArray<Enemy>();
+	public Texture sprite;
 	
 	public abstract String getName();
 
@@ -31,8 +32,16 @@ public abstract class Tower {
 	public abstract float[] getRange(int[] mouseLoc);
 	public abstract String getDescript();
 	
-	public abstract void acquireTargets(ArrayList<Enemy> enemies, HashMap<Enemy, ArrayList<Tower>> addTtoE, HashMap<Enemy, ArrayList<Tower>> remTfromE, HashMap<Tower, ArrayList<Enemy>> addEtoT, HashMap<Tower, ArrayList<Enemy>> remEfromT);
+	public int[] getCenter() {
+		return center;
+	}
 
-	//public abstract void fire(ArrayList<Projectile> addB);
+	public void setCenter(int[] center) {
+		this.center = center;
+	}
+
+	public abstract void acquireTargets(DelayedRemovalArray<Enemy> enemies);
+
+	public abstract void fire(DelayedRemovalArray<Projectile> bullets);
 
 }

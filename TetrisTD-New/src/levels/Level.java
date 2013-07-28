@@ -11,7 +11,7 @@ public abstract class Level {
 	protected float levelTime = 0;
 	
 	public Wave currWave;
-	public double[] startingLoc = new double[2];
+	public int[] startingLoc = new int[2];
 	public Array<Point> waypts = new Array<Point>();
 	public boolean done = false;
 
