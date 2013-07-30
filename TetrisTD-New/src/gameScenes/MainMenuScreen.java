@@ -28,7 +28,7 @@ public class MainMenuScreen implements Screen {
 		cam.update();
 		
 		game.batch.begin();
-		game.font.setColor(Color.WHITE);
+		game.font.setColor(new Color(Color.WHITE));
 		game.font.draw(game.batch, "Click Anywhere on Screen", 512, 360);
 		game.font.draw(game.batch, "To Start the Game", 512, 410);
 		game.batch.end();

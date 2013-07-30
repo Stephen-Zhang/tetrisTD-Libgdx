@@ -10,7 +10,7 @@ public class Wave {
 	private Array<Enemy> waveOfE;
 	private Array<Integer> timings;
 	public int startTime;
-	public String textEvent;
+	private String textEvent = "";
 	private Array<TowerType> availTowers;
 	
 	public Wave(Array<Enemy> e, Array<Integer> t, Array<TowerType> towers, int start, String text) {
@@ -39,15 +39,18 @@ public class Wave {
 	}
 
 	public boolean checkTextEvent() {
-		if (this.textEvent != null) {
+		if (this.textEvent != "") {
 			return true;
 		}
 		return false;
 	}
 	
 	public String getTextEvent() {
-		String retVal = this.textEvent;
-		this.textEvent = null;
-		return retVal;
+		return this.textEvent;
 	}
+
+	public void setTextEvent(String textEvent) {
+		this.textEvent = textEvent;
+	}
+	
 }

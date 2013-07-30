@@ -10,13 +10,16 @@ import projectiles.Projectile;
 import towers.Tower;
 import towers.TowerType;
 import util.MyInputProcessor;
+import util.OverlayInputProcessor;
 import util.utilityFunctions;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.MapProperties;
@@ -38,16 +41,25 @@ public class GameScreen implements Screen {
 	private TiledMap map;
 
 	float totalTime;
+	String textEvent;
 	
 	OrthographicCamera cam;
 	
+	InputProcessor gameProcessor;
+	InputProcessor overlayProcessor;
+	
 	public GameScreen(final tetrisTD game, int level) {
+		textEvent = "";
 		Texture.setEnforcePotImages(false);
 		this.game = game;
 		this.game.enemies = new DelayedRemovalArray<Enemy>();
 		this.game.towers = new Array<Tower>();
 		this.game.bullets = new DelayedRemovalArray<Projectile>();
-		Gdx.input.setInputProcessor(new MyInputProcessor(game));
+		
+		gameProcessor = new MyInputProcessor(game);
+		overlayProcessor = new OverlayInputProcessor(game);
+		
+		Gdx.input.setInputProcessor(gameProcessor);
 		
 		if (level == 1) {
 			this.game.setCurrLevel(new LevelOne());
@@ -81,7 +93,7 @@ public class GameScreen implements Screen {
 		game.batch.begin();
 		
 		//Draw Menu
-		game.font.setColor(Color.WHITE);
+		game.font.setColor(new Color(Color.WHITE));
 		if (game.player.lives > 0) {
 			game.font.draw(game.batch, "Lives: "+game.player.lives, 840, 732);
 			game.font.draw(game.batch, "Gold: "+game.player.gold, 840, 700);
@@ -122,24 +134,22 @@ public class GameScreen implements Screen {
 
 			float[] shapeVertices = game.player.getTowerShape();
 			
-			
 			this.game.player.canPlaceTower = canPutDown(shapeVertices);
 			
+			Gdx.gl10.glLineWidth(2);
 			drawShapes.begin(ShapeType.Line);
 			if (this.game.player.canPlaceTower && this.game.player.gold >= this.game.player.getCostOfTower()) {
-				drawShapes.setColor(Color.GREEN);
+				drawShapes.setColor(new Color(Color.GREEN));
 				drawShapes.polygon(shapeVertices);
-				drawShapes.setColor(Color.BLUE);
+				drawShapes.setColor(new Color(Color.BLUE));
 				drawShapes.polygon(game.player.getTowerRange());
 			} else {
-				drawShapes.setColor(Color.RED);
+				drawShapes.setColor(new Color(Color.RED));
 				drawShapes.polygon(shapeVertices);
 			}
-			for (Tower t : this.game.towers) {
-				drawShapes.setColor(Color.WHITE);
-				System.out.println(t.getShape(t.getCenter())[0]);
-				drawShapes.polygon(t.getShape(t.getCenter()));
-			}
+
+			Gdx.gl10.glLineWidth(1);
+
 			drawShapes.end();
 			drawShapes.dispose();
 		}
@@ -159,67 +169,100 @@ public class GameScreen implements Screen {
 			game.batch.draw(p.sprite, p.pos[0], p.pos[1]);
 		}
 
-		/*************************************************************************
-		*
-		**DRAWING ENDS HERE
-		*
-		**************************************************************************/
-		game.batch.end();
+		//Draw Overlay for text events
+		if (textEvent != "") {
+			Gdx.input.setInputProcessor(overlayProcessor);
+			
+			Sprite overlay = new Sprite(new Texture("util/overlay.png"), 1024, 768);
+			overlay.draw(this.game.batch);
+			List<String> textEventList = utilityFunctions.wrap(textEvent, game.font, 200);
+			Iterator<String> iter = textEventList.iterator();
+			int height = 484;
+			
+			while (iter.hasNext()) {
+				game.font.draw(game.batch, iter.next(), 412, height);
+				height -= game.font.getLineHeight();
+			}
 
-		//Update the game
-			//Update the enemy spawns
-		if (this.game.getCurrLevel().currWave.nextEnemyAvail() && this.game.getCurrLevel().currWave.timeForNextEnemy(this.game.getCurrLevel().getLevelTime())) {
-			this.game.enemies.add(this.game.getCurrLevel().currWave.getNextEnemy());
-		}
-		if (this.game.getCurrLevel().nextWaveAvail() && this.game.getCurrLevel().timeForNextWave()) {
-			this.game.getCurrLevel().getNextWave();
-		}
-		if (!this.game.getCurrLevel().currWave.nextEnemyAvail() && this.game.enemies.size == 0) {
-			this.game.getCurrLevel().sendEarly = true;
+			Gdx.gl10.glLineWidth(3);
+			ShapeRenderer textBox = new ShapeRenderer();
+			textBox.setColor(new Color(Color.WHITE));
+			textBox.begin(ShapeType.Line);
+			textBox.rect(362, 264, 300, 300);
+			textBox.end();
+			textBox.dispose();
+
 		} else {
-			this.game.getCurrLevel().sendEarly = false;
+			Gdx.input.setInputProcessor(gameProcessor);
 		}
 		
-		for (Enemy e: this.game.enemies) {
-			if ( e.arrivedAtDest() && e.nextDestExists() ) {
-				e.getNextDest();
-			}
-			if (e.success) {
-				this.game.enemies.removeValue(e, false);
-				if (game.player.lives > 0) {
-					game.player.lives--;
-				}
-				continue;
-			} else {
-				e.updateMovement(Gdx.graphics.getDeltaTime());
-			}
-		}
-		
-		for (Tower t: this.game.towers) {
-			t.acquireTargets(this.game.enemies);
-			t.fire(this.game.bullets);
-		}
-		
-		for (Projectile p : this.game.bullets) {
-			if (!this.game.enemies.contains(p.target, false)) {
-				this.game.bullets.removeValue(p, false);
-				continue;
-			}
-			p.updateMovement();
-			if (Intersector.overlapConvexPolygons(p.getHitbox(), p.target.getHitbox())) {
-				p.target.setCurrHealth(p.target.getCurrHealth() - p.damage);
-				if (p.target.getCurrHealth() < 0) {
-					//Dead
-					for (Tower t : p.target.towersAttacking) {
-						t.target.removeValue(p.target, false);
-					}
-					this.game.player.gold += p.target.bounty;
-					this.game.enemies.removeValue(p.target, false);
-				}
-				this.game.bullets.removeValue(p, false);
-			}
-		}
 
+		game.batch.end();
+		/************************************************************************
+		 * DRAWING ENDS HERE													*
+		 ************************************************************************/
+
+
+
+		/************************************
+		 * UPDATING THE GAME CODE GOES HERE *
+		 ************************************/
+		//Update the enemy spawns
+
+		textEvent = this.game.getCurrLevel().currWave.getTextEvent();
+		if (textEvent == "") {
+			if (this.game.getCurrLevel().currWave.nextEnemyAvail() && this.game.getCurrLevel().currWave.timeForNextEnemy(this.game.getCurrLevel().getLevelTime())) {
+				this.game.enemies.add(this.game.getCurrLevel().currWave.getNextEnemy());
+			}
+			if (this.game.getCurrLevel().nextWaveAvail() && this.game.getCurrLevel().timeForNextWave()) {
+				this.game.getCurrLevel().getNextWave();
+			}
+			if (!this.game.getCurrLevel().currWave.nextEnemyAvail() && this.game.enemies.size == 0) {
+				this.game.getCurrLevel().sendEarly = true;
+			} else {
+				this.game.getCurrLevel().sendEarly = false;
+			}
+			
+			for (Enemy e: this.game.enemies) {
+				if ( e.arrivedAtDest() && e.nextDestExists() ) {
+					e.getNextDest();
+				}
+				if (e.success) {
+					this.game.enemies.removeValue(e, false);
+					if (game.player.lives > 0) {
+						game.player.lives--;
+					}
+					continue;
+				} else {
+					e.updateMovement(Gdx.graphics.getDeltaTime());
+				}
+			}
+			
+			for (Tower t: this.game.towers) {
+				t.acquireTargets(this.game.enemies);
+				t.fire(this.game.bullets);
+			}
+			
+			for (Projectile p : this.game.bullets) {
+				if (!this.game.enemies.contains(p.target, false)) {
+					this.game.bullets.removeValue(p, false);
+					continue;
+				}
+				p.updateMovement();
+				if (Intersector.overlapConvexPolygons(p.getHitbox(), p.target.getHitbox())) {
+					p.target.setCurrHealth(p.target.getCurrHealth() - p.damage);
+					if (p.target.getCurrHealth() < 0) {
+						//Dead
+						for (Tower t : p.target.towersAttacking) {
+							t.target.removeValue(p.target, false);
+						}
+						this.game.player.gold += p.target.bounty;
+						this.game.enemies.removeValue(p.target, false);
+					}
+					this.game.bullets.removeValue(p, false);
+				}
+			}	
+		}
 	}
 
 	private boolean canPutDown(float[] shapeVertices) {
