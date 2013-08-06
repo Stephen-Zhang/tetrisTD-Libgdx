@@ -54,7 +54,8 @@ public class MyInputProcessor implements InputProcessor {
 		if (button == Input.Buttons.LEFT) {
 			if (this.game.player.holding != TowerType.NULL && this.game.player.canPlaceTower && this.game.player.gold >= this.game.player.getCostOfTower()) {
 				this.game.player.gold -= this.game.player.getCostOfTower();
-				this.game.getTowers().add(this.game.player.makeNewTower());
+				this.game.placeTower(this.game.player.makeNewTower());
+				
 				this.game.player.holding = TowerType.NULL;
 			}
 		} else if (button == Input.Buttons.RIGHT) {

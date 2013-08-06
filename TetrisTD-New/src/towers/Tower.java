@@ -29,6 +29,8 @@ public abstract class Tower {
 	
 	public abstract int getCost();
 	public abstract float[] getShape(int[] mouseLoc);
+	public abstract float[] getShapeBody();
+	public abstract float[] getShapeBody(int[] mouseLoc);
 	public abstract float[] getRange(int[] mouseLoc);
 	public abstract String getDescript();
 	

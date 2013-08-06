@@ -4,6 +4,7 @@ import levels.Level;
 import player.Player;
 import projectiles.Projectile;
 import towers.Tower;
+import util.utilityFunctions;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -21,6 +22,7 @@ public class tetrisTD extends Game {
 	protected DelayedRemovalArray<Enemy> enemies;
 	protected Array<Tower> towers;
 	protected DelayedRemovalArray<Projectile> bullets;
+	protected boolean[] field;
 	private Level currLevel;
 
 	public Level getCurrLevel() {
@@ -31,6 +33,14 @@ public class tetrisTD extends Game {
 		this.currLevel = currLevel;
 	}
 
+	public boolean[] getField() {
+		return field;
+	}
+	
+	public void setField(boolean[] field) {
+		this.field = field;
+	}
+	
 	public Array<Projectile> getBullets() {
 		return bullets;
 	}
@@ -53,6 +63,13 @@ public class tetrisTD extends Game {
 
 	public void setTowers(Array<Tower> towers) {
 		this.towers = towers;
+	}
+	
+	public void placeTower(Tower tower) {
+		this.towers.add(tower);
+		for (int i : utilityFunctions.flattenShape(tower.getShapeBody(), 24)) {
+			this.field[i] = true;
+		}		
 	}
 
 	@Override

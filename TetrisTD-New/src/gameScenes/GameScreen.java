@@ -48,6 +48,9 @@ public class GameScreen implements Screen {
 	InputProcessor gameProcessor;
 	InputProcessor overlayProcessor;
 	
+	final int fieldWidth = 24;
+	final int fieldHeight = 24;
+	
 	public GameScreen(final tetrisTD game, int level) {
 		textEvent = "";
 		Texture.setEnforcePotImages(false);
@@ -55,6 +58,7 @@ public class GameScreen implements Screen {
 		this.game.enemies = new DelayedRemovalArray<Enemy>();
 		this.game.towers = new Array<Tower>();
 		this.game.bullets = new DelayedRemovalArray<Projectile>();
+		this.game.field = new boolean[fieldWidth*fieldHeight];
 		
 		gameProcessor = new MyInputProcessor(game);
 		overlayProcessor = new OverlayInputProcessor(game);
@@ -133,8 +137,10 @@ public class GameScreen implements Screen {
 			ShapeRenderer drawShapes = new ShapeRenderer();
 
 			float[] shapeVertices = game.player.getTowerShape();
-			
-			this.game.player.canPlaceTower = canPutDown(shapeVertices);
+			float[] shapeBody = game.player.getTowerShapeBody();
+
+			this.game.player.canPlaceTower = canPlace(shapeBody);
+			//this.game.player.canPlaceTower = canPutDown(shapeVertices);
 			
 			Gdx.gl10.glLineWidth(2);
 			drawShapes.begin(ShapeType.Line);
@@ -286,6 +292,38 @@ public class GameScreen implements Screen {
 			tempPolygon = new Polygon(t.getShape(t.getCenter()));
 			if (Intersector.overlapConvexPolygons(tempPolygon, mouseShape)) {
 				return false;
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Takes in grid coordinates of a shape (tower, eg) and returns if it can be placed
+	 * @param shapeBody
+	 * @return
+	 */
+	private boolean canPlace(float[] shapeBody) {
+		int[] flattenedShape = utilityFunctions.flattenShape(shapeBody, fieldWidth);
+
+		boolean occupied = false;
+		for (int i = 0; i < flattenedShape.length && !occupied; i++) {
+			if (flattenedShape[i] >= this.game.field.length) return false;	//HACK: returns false when mouse outside screen range
+			occupied |= this.game.field[flattenedShape[i]];
+		}
+		if (occupied) 
+			return false;
+		
+		TiledMapTileLayer tiledLayer = (TiledMapTileLayer)map.getLayers().get(0);
+		for (int i = 0; i < shapeBody.length-1; i+=2) {
+			//Normalized X and Y into the center of each tile.
+			int x = (int)(shapeBody[i]);
+			int y = (int)(shapeBody[i+1]);
+			
+			MapProperties tProps = tiledLayer.getCell(x, y).getTile().getProperties();
+			if (tProps.containsKey("buildable")) {
+				if (tProps.get("buildable").equals("no")) {
+					return false;
+				}
 			}
 		}
 		return true;

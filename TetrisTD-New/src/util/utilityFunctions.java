@@ -70,4 +70,22 @@ public class utilityFunctions {
         
         return list;
     }
+    
+	/**
+	 * Takes in grid coordinates of a shape and returns flattened index representation.
+	 * 3x3 grid is indexed as follows:
+	 * 678
+	 * 345
+	 * 012
+	 * @param shapeBody
+	 * @return
+	 */
+    public static int[] flattenShape(float[] shapeBody, int fieldWidth) {
+    	int[] retVal = new int[shapeBody.length/2];
+		for (int i = 0; i < retVal.length; i++) {
+			retVal[i] = (int)(shapeBody[2*i] + fieldWidth*shapeBody[2*i+1]);
+		}
+		return retVal;
+    }
+    
 }

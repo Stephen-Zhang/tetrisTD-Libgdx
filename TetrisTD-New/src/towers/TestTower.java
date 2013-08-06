@@ -22,6 +22,12 @@ public class TestTower extends Tower {
 		0, 32,
 	});
 	
+	private float[] shapeBody = new float[] {
+		0, 0,
+		1, 0,
+		1, 1,
+	};
+	
 	private float[] offset = new float[] {
 		2, 2,
 		-2, 2,
@@ -75,6 +81,28 @@ public class TestTower extends Tower {
 	@Override
 	public int getCost() {
 		return gold;
+	}
+
+	
+	public float[] getShapeBody() {
+		return getShapeBody(this.center);
+	}
+	
+	/**
+	 * Takes in mouse location and returns adjusted grid coordinates of shape body
+	 * @param mouseLoc
+	 * @return
+	 */
+	public float[] getShapeBody(int[] mouseLoc) {
+		//normalize mouse location into grid coordinates here
+		int mouseX = mouseLoc[0]/32;
+		int mouseY = mouseLoc[1]/32;
+		float[] retVal = shapeBody;
+		for (int i = 0; i < retVal.length; i += 2) {
+			retVal[i] += mouseX;
+			retVal[i+1] += mouseY;
+		}
+		return retVal;
 	}
 
 	@Override

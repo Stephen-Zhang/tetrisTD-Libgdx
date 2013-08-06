@@ -89,6 +89,21 @@ public class Player {
 		}
 		return null;
 	}
+
+	public float[] getTowerShapeBody() {
+		// TODO Auto-generated method stub
+		switch(holding) {
+		case TEST_TOWER:
+			return new TestTower().getShapeBody(this.currMouseLoc);
+		case NULL:
+			return null;
+		case TEST_AOE_TOWER:
+			break;
+		default:
+			break;
+		}
+		return null;
+	}
 	
 	public float[] getTowerRange() {
 		// TODO Auto-generated method stub
