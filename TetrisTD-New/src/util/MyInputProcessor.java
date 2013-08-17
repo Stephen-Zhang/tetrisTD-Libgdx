@@ -1,10 +1,9 @@
 package util;
 
 import gameScenes.tetrisTD;
-import towers.TestTower;
+import towers.Tower;
 import towers.TowerType;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 
@@ -36,10 +35,13 @@ public class MyInputProcessor implements InputProcessor {
 		if (character == 't') {
 			game.player.holding = TowerType.TEST_TOWER;
 		}
+		if (character == 'y') {
+			game.player.holding = TowerType.ATK_SPEED_TOWER;
+		}
 		if (this.game.getCurrLevel().sendEarly && !this.game.getCurrLevel().done && character == 'p') {
 			this.game.getCurrLevel().getNextWave();
 		}
-		return false;
+		return false;		
 	}
 
 	@Override
@@ -54,7 +56,13 @@ public class MyInputProcessor implements InputProcessor {
 		if (button == Input.Buttons.LEFT) {
 			if (this.game.player.holding != TowerType.NULL && this.game.player.canPlaceTower && this.game.player.gold >= this.game.player.getCostOfTower()) {
 				this.game.player.gold -= this.game.player.getCostOfTower();
-				this.game.placeTower(this.game.player.makeNewTower());
+				
+				Tower placeThis = this.game.player.makeNewTower();
+				this.game.placeTower(placeThis);
+				
+				if (placeThis.isBuffTower()) {
+					placeThis.getTowersInRange(this.game.getTowers());
+				}
 				
 				this.game.player.holding = TowerType.NULL;
 			}

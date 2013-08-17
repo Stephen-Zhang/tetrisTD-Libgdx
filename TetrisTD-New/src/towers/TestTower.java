@@ -29,12 +29,12 @@ public class TestTower extends Tower {
 	};
 	
 	private float[] offset = new float[] {
-		2, 2,
-		-2, 2,
-		-2, -2,
-		2, -2,
-		2, -2,
-		2, -2,
+		1, 1,
+		-1, 1,
+		-1, -1,
+		1, -1,
+		1, -1,
+		1, -1,
 	};
 
 	private Polygon range = new Polygon(new float[]{

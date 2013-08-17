@@ -67,9 +67,10 @@ public class tetrisTD extends Game {
 	
 	public void placeTower(Tower tower) {
 		this.towers.add(tower);
-		for (int i : utilityFunctions.flattenShape(tower.getShapeBody(), 24)) {
+		tower.gridLocation = utilityFunctions.flattenShape(tower.getShapeBody(), 24);
+		for (int i : tower.gridLocation) {
 			this.field[i] = true;
-		}		
+		}
 	}
 
 	@Override

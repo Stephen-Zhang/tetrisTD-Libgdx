@@ -1,5 +1,6 @@
 package gameScenes;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -28,6 +29,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
 
@@ -86,8 +88,10 @@ public class GameScreen implements Screen {
 		renderer.render();
 		
 		//Update time trackers
-		totalTime += Gdx.graphics.getDeltaTime()*1000;
-		this.game.getCurrLevel().updateLevelTime(delta*1000);		
+		if (this.textEvent == "") {
+			totalTime += Gdx.graphics.getDeltaTime()*1000;
+			this.game.getCurrLevel().updateLevelTime(delta*1000);		
+		}
 		
 		/*************************************************************************
 		*
@@ -269,32 +273,6 @@ public class GameScreen implements Screen {
 				}
 			}	
 		}
-	}
-
-	private boolean canPutDown(float[] shapeVertices) {
-		// TODO Auto-generated method stub
-		TiledMapTileLayer tiledLayer = (TiledMapTileLayer)map.getLayers().get(0);
-		for (int i = 0; i < shapeVertices.length-1; i+=2) {
-			//Normalized X and Y into the center of each tile.
-			int x = (int)((shapeVertices[i])/32);
-			int y = (int)((shapeVertices[i+1])/32);
-			
-			MapProperties tProps = tiledLayer.getCell(x, y).getTile().getProperties();
-			if (tProps.containsKey("buildable")) {
-				if (tProps.get("buildable").equals("no")) {
-					return false;
-				}
-			}
-		}
-		Polygon mouseShape = new Polygon(shapeVertices);
-		Polygon tempPolygon;
-		for (Tower t : this.game.towers) {
-			tempPolygon = new Polygon(t.getShape(t.getCenter()));
-			if (Intersector.overlapConvexPolygons(tempPolygon, mouseShape)) {
-				return false;
-			}
-		}
-		return true;
 	}
 	
 	/**

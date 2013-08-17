@@ -2,6 +2,7 @@ package player;
 
 import java.util.ArrayList;
 
+import towers.AtkSpeedTower;
 import towers.TestTower;
 import towers.Tower;
 import towers.TowerType;
@@ -54,6 +55,8 @@ public class Player {
 			return null;
 		case TEST_AOE_TOWER:
 			break;
+		case ATK_SPEED_TOWER:
+			return new AtkSpeedTower(this.currMouseLoc);
 		default:
 			break;
 		}
@@ -69,6 +72,8 @@ public class Player {
 			return 0;
 		case TEST_AOE_TOWER:
 			break;
+		case ATK_SPEED_TOWER:
+			return new AtkSpeedTower().getCost();
 		default:
 			break;
 		}
@@ -84,6 +89,8 @@ public class Player {
 			return null;
 		case TEST_AOE_TOWER:
 			break;
+		case ATK_SPEED_TOWER:
+			return new AtkSpeedTower().getShape(this.currMouseLoc);
 		default:
 			break;
 		}
@@ -99,6 +106,8 @@ public class Player {
 			return null;
 		case TEST_AOE_TOWER:
 			break;
+		case ATK_SPEED_TOWER:
+			return new AtkSpeedTower().getShapeBody(this.currMouseLoc);
 		default:
 			break;
 		}
@@ -114,8 +123,11 @@ public class Player {
 			return null;
 		case TEST_AOE_TOWER:
 			break;
+		case ATK_SPEED_TOWER:
+			return new AtkSpeedTower().getRange(this.currMouseLoc);
 		default:
 			break;
 		}
 		return null;
-	}}
+	}
+}
