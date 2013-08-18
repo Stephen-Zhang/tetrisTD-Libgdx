@@ -3,11 +3,9 @@ package player;
 import java.util.ArrayList;
 
 import towers.AtkSpeedTower;
+import towers.BaseTower;
 import towers.TestTower;
-import towers.Tower;
 import towers.TowerType;
-
-import com.badlogic.gdx.math.Polygon;
 
 public class Player {
 	public int gold = 0;
@@ -47,16 +45,16 @@ public class Player {
 		}
 	}
 
-	public Tower makeNewTower() {
+	public BaseTower makeNewTower(int id) {
 		switch(holding) {
 		case TEST_TOWER: 
-			return new TestTower(this.currMouseLoc);
+			return new TestTower(id, this.currMouseLoc);
 		case NULL: 
 			return null;
 		case TEST_AOE_TOWER:
 			break;
 		case ATK_SPEED_TOWER:
-			return new AtkSpeedTower(this.currMouseLoc);
+			return new AtkSpeedTower(id, this.currMouseLoc);
 		default:
 			break;
 		}

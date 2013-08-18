@@ -1,6 +1,5 @@
 package gameScenes;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -8,7 +7,9 @@ import levels.Level;
 import levels.LevelOne;
 import player.Player;
 import projectiles.Projectile;
-import towers.Tower;
+import towers.AttackTower;
+import towers.BaseTower;
+import towers.StatusTower;
 import towers.TowerType;
 import util.MyInputProcessor;
 import util.OverlayInputProcessor;
@@ -28,8 +29,6 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.Polygon;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
 
@@ -58,7 +57,7 @@ public class GameScreen implements Screen {
 		Texture.setEnforcePotImages(false);
 		this.game = game;
 		this.game.enemies = new DelayedRemovalArray<Enemy>();
-		this.game.towers = new Array<Tower>();
+		this.game.towers = new Array<BaseTower>();
 		this.game.bullets = new DelayedRemovalArray<Projectile>();
 		this.game.field = new boolean[fieldWidth*fieldHeight];
 		
@@ -170,7 +169,7 @@ public class GameScreen implements Screen {
 		}
 		
 		//Towers
-		for (Tower t : this.game.towers) {
+		for (BaseTower t : this.game.towers) {
 			game.batch.draw(new Texture(t.getSpritePath()), t.getCenter()[0], t.getCenter()[1]);
 		}
 		
@@ -248,9 +247,24 @@ public class GameScreen implements Screen {
 				}
 			}
 			
-			for (Tower t: this.game.towers) {
-				t.acquireTargets(this.game.enemies);
-				t.fire(this.game.bullets);
+			for (BaseTower t: this.game.towers) {
+				if (t.isBuffTower()) {
+					StatusTower buffT = (StatusTower) t;
+				} else {
+					AttackTower atkT = (AttackTower) t;
+					atkT.buffUpdate(this.game.towers);
+					atkT.acquireTargets(this.game.enemies);
+					if(atkT.getCanFire()) {
+						atkT.setCooldown(0);
+						atkT.fire(this.game.bullets);
+						atkT.setCanFire(false);
+					} else {
+						atkT.setCooldown(atkT.getCooldown() + Gdx.graphics.getDeltaTime());
+						if (atkT.getCooldown() >= atkT.getFireRate()) {
+							atkT.setCanFire(true);
+						}
+					}					
+				}
 			}
 			
 			for (Projectile p : this.game.bullets) {
@@ -263,7 +277,7 @@ public class GameScreen implements Screen {
 					p.target.setCurrHealth(p.target.getCurrHealth() - p.damage);
 					if (p.target.getCurrHealth() < 0) {
 						//Dead
-						for (Tower t : p.target.towersAttacking) {
+						for (AttackTower t : p.target.towersAttacking) {
 							t.target.removeValue(p.target, false);
 						}
 						this.game.player.gold += p.target.bounty;

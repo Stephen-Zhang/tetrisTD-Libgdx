@@ -1,6 +1,7 @@
 package towers;
 
 import projectiles.Projectile;
+import projectiles.TestBullet;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Intersector;
@@ -9,7 +10,7 @@ import com.badlogic.gdx.utils.DelayedRemovalArray;
 
 import enemies.Enemy;
 
-public class TestTower extends Tower {
+public class TestTower extends AttackTower {
 	
 	public int key = Input.Keys.T;
 	
@@ -48,41 +49,38 @@ public class TestTower extends Tower {
 	
 	private String name = "Test Tower";
 	private int gold = 100;
-	private String description = "This tower is a test tower for single targets.";
+	private String description = "This tower is a test tower for single targets. Basic without numbers tuned";
 	
 	private String iconPath = "towers/testTower.png";
 	private String spritePath = "towers/testTower.png";
 
 	public TestTower() {
 		fireRate = 1;
+		damage = 10;
 		center = new int[]{0,0};
 	}
 	
-	public TestTower(int[] cent) {
+	public TestTower(int id, int[] cent) {
 		super();
+		this.id = id;
 		center = cent;
 	}
 	
-	@Override
 	public String getName() {
 		return name;
 	}
 
-	@Override
 	public String getSpritePath() {
 		return spritePath;
 	}
 
-	@Override
 	public String getIconPath() {
 		return iconPath;
 	}
 
-	@Override
 	public int getCost() {
 		return gold;
 	}
-
 	
 	public float[] getShapeBody() {
 		return getShapeBody(this.center);
@@ -125,23 +123,21 @@ public class TestTower extends Tower {
 		for (int i = 0; i < retVal.length; i++ ) {
 			if (i % 2 == 0) {
 				//Even and 0
-				retVal[i] += mouseLoc[0];
+				retVal[i] += offset[i] + mouseLoc[0];
 			} else {
-				retVal[i] += mouseLoc[1];
+				retVal[i] += offset[i] + mouseLoc[1];
 			}
 		}
 		return retVal;
 	}
 
-	@Override
 	public String getDescript() {
 		return description;
 	}
 
-	@Override
 	public void acquireTargets(DelayedRemovalArray<Enemy> enemies) {
 		//Lose old targets
-		if (this.target.size > 0 && Intersector.overlapConvexPolygons(this.target.get(0).getHitbox(), this.range)) {
+		if (this.target.size > 0 && !Intersector.overlapConvexPolygons(this.target.get(0).getHitbox(), this.range)) {
 			this.target.get(0).towersAttacking.removeValue(this, false);
 			this.target.removeIndex(0);
 		}
@@ -164,10 +160,9 @@ public class TestTower extends Tower {
 		}
 	}
 
-	@Override
 	public void fire(DelayedRemovalArray<Projectile> bullets) {
 		for (Enemy e : this.target) {
-			bullets.add(new TestBullet(e, this.center.clone()));
+			bullets.add(new TestBullet(e, this.damage, this.center.clone()));
 		}
 	}
 

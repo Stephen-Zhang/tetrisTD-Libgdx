@@ -56,10 +56,11 @@ public class AtkSpeedTower extends StatusTower{
 		
 	}
 	
-	public AtkSpeedTower(int[] center) {
+	public AtkSpeedTower(int id, int[] center) {
+		this.id = id;
 		this.center = center;
-		this.buff = StatusType.INCREASE_ATK_SPEED;
-		
+		this.buffs.add(StatusType.INCREASE_ATK_SPEED);
+		this.buffStrengthBase = .50; //50% atkSpeed
 	}
 	
 	@Override
@@ -71,13 +72,13 @@ public class AtkSpeedTower extends StatusTower{
 	@Override
 	public String getSpritePath() {
 		// TODO Auto-generated method stub
-		return null;
+		return spritePath;
 	}
 
 	@Override
 	public String getIconPath() {
 		// TODO Auto-generated method stub
-		return null;
+		return iconPath;
 	}
 
 	@Override
@@ -117,7 +118,7 @@ public class AtkSpeedTower extends StatusTower{
 	@Override
 	public String getDescript() {
 		// TODO Auto-generated method stub
-		return "Increases attack speed by 15%!";
+		return "Increases attack speed by"+this.buffStrengthBase+"%!";
 	}
 
 	@Override
@@ -137,18 +138,6 @@ public class AtkSpeedTower extends StatusTower{
 			retVal[i+1] += mouseY;
 		}
 		return retVal;
-	}
-
-	@Override
-	public void acquireTargets(DelayedRemovalArray<Enemy> enemies) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void fire(DelayedRemovalArray<Projectile> bullets) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

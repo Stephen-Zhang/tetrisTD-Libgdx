@@ -3,7 +3,7 @@ package gameScenes;
 import levels.Level;
 import player.Player;
 import projectiles.Projectile;
-import towers.Tower;
+import towers.BaseTower;
 import util.utilityFunctions;
 
 import com.badlogic.gdx.Game;
@@ -20,7 +20,7 @@ public class tetrisTD extends Game {
 	BitmapFont font;
 	public Player player;
 	protected DelayedRemovalArray<Enemy> enemies;
-	protected Array<Tower> towers;
+	protected Array<BaseTower> towers;
 	protected DelayedRemovalArray<Projectile> bullets;
 	protected boolean[] field;
 	private Level currLevel;
@@ -57,18 +57,18 @@ public class tetrisTD extends Game {
 		this.enemies = enemies;
 	}
 
-	public Array<Tower> getTowers() {
+	public Array<BaseTower> getTowers() {
 		return towers;
 	}
 
-	public void setTowers(Array<Tower> towers) {
+	public void setTowers(Array<BaseTower> towers) {
 		this.towers = towers;
 	}
 	
-	public void placeTower(Tower tower) {
+	public void placeTower(BaseTower tower) {
 		this.towers.add(tower);
-		tower.gridLocation = utilityFunctions.flattenShape(tower.getShapeBody(), 24);
-		for (int i : tower.gridLocation) {
+		tower.setGridLocation(utilityFunctions.flattenShape(tower.getShapeBody(), 24));
+		for (int i : tower.getGridLocation()) { 
 			this.field[i] = true;
 		}
 	}

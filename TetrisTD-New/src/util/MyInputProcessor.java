@@ -1,7 +1,7 @@
 package util;
 
 import gameScenes.tetrisTD;
-import towers.Tower;
+import towers.BaseTower;
 import towers.TowerType;
 
 import com.badlogic.gdx.Input;
@@ -10,6 +10,7 @@ import com.badlogic.gdx.InputProcessor;
 public class MyInputProcessor implements InputProcessor {
 
 	final tetrisTD game;
+	private int idGen = 0;
 	
 	public MyInputProcessor(final tetrisTD game) {
 		this.game = game;
@@ -57,7 +58,7 @@ public class MyInputProcessor implements InputProcessor {
 			if (this.game.player.holding != TowerType.NULL && this.game.player.canPlaceTower && this.game.player.gold >= this.game.player.getCostOfTower()) {
 				this.game.player.gold -= this.game.player.getCostOfTower();
 				
-				Tower placeThis = this.game.player.makeNewTower();
+				BaseTower placeThis = this.game.player.makeNewTower(idGen++);
 				this.game.placeTower(placeThis);
 				
 				if (placeThis.isBuffTower()) {
