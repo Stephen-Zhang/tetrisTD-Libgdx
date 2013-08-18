@@ -59,7 +59,7 @@ public class GameScreen implements Screen {
 		this.game.enemies = new DelayedRemovalArray<Enemy>();
 		this.game.towers = new Array<BaseTower>();
 		this.game.bullets = new DelayedRemovalArray<Projectile>();
-		this.game.field = new boolean[fieldWidth*fieldHeight];
+		this.game.field = new Integer[fieldWidth*fieldHeight];
 		
 		gameProcessor = new MyInputProcessor(game);
 		overlayProcessor = new OverlayInputProcessor(game);
@@ -297,13 +297,12 @@ public class GameScreen implements Screen {
 	private boolean canPlace(float[] shapeBody) {
 		int[] flattenedShape = utilityFunctions.flattenShape(shapeBody, fieldWidth);
 
-		boolean occupied = false;
-		for (int i = 0; i < flattenedShape.length && !occupied; i++) {
+		for (int i = 0; i < flattenedShape.length; i++) {
 			if (flattenedShape[i] >= this.game.field.length) return false;	//HACK: returns false when mouse outside screen range
-			occupied |= this.game.field[flattenedShape[i]];
+			if (this.game.field[flattenedShape[i]] != null) {
+				return false;
+			}
 		}
-		if (occupied) 
-			return false;
 		
 		TiledMapTileLayer tiledLayer = (TiledMapTileLayer)map.getLayers().get(0);
 		for (int i = 0; i < shapeBody.length-1; i+=2) {

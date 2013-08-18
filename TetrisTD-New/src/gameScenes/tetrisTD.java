@@ -22,7 +22,7 @@ public class tetrisTD extends Game {
 	protected DelayedRemovalArray<Enemy> enemies;
 	protected Array<BaseTower> towers;
 	protected DelayedRemovalArray<Projectile> bullets;
-	protected boolean[] field;
+	protected Integer[] field;
 	private Level currLevel;
 
 	public Level getCurrLevel() {
@@ -33,11 +33,11 @@ public class tetrisTD extends Game {
 		this.currLevel = currLevel;
 	}
 
-	public boolean[] getField() {
+	public Integer[] getField() {
 		return field;
 	}
 	
-	public void setField(boolean[] field) {
+	public void setField(Integer[] field) {
 		this.field = field;
 	}
 	
@@ -69,7 +69,7 @@ public class tetrisTD extends Game {
 		this.towers.add(tower);
 		tower.setGridLocation(utilityFunctions.flattenShape(tower.getShapeBody(), 24));
 		for (int i : tower.getGridLocation()) { 
-			this.field[i] = true;
+			this.field[i] = tower.getId();
 		}
 	}
 

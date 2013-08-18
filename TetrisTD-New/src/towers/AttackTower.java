@@ -99,6 +99,10 @@ public abstract class AttackTower implements BaseTower{
 		return false;
 	}
 
+	public int getId() {
+		return this.id;
+	}
+
 	public void getTowersInRange(Array<BaseTower> array) {
 		//Do nothing. Doesn't need to know what towers are in range of it yet.
 	}

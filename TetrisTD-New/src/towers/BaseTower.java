@@ -18,9 +18,14 @@ public interface BaseTower {
 
 	public float[] getShapeBody();
 	public float[] getShapeBody(int[] mouseLoc);
+
+	public float[] getRangeBody();
+	public float[] getRangeBody(int[] mouseLoc);
 	
 	public int[] getGridLocation();
 	public void setGridLocation(int[] gridLocs);
+	
+	public int getId();
 	
 	public boolean isBuffTower();
 	

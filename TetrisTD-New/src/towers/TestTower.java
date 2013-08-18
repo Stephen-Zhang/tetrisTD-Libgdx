@@ -29,6 +29,21 @@ public class TestTower extends AttackTower {
 		1, 1,
 	};
 	
+	private float[] rangeBody = new float[] {
+		-1, -1,
+		-1, 0,
+		-1, 1,
+		0, 1,
+		0, 2,
+		1, 2,
+		2, 2,
+		2, 1,
+		2, 0,
+		2, -1,
+		1, -1,
+		0, -1,
+	};
+	
 	private float[] offset = new float[] {
 		1, 1,
 		-1, 1,
@@ -48,7 +63,7 @@ public class TestTower extends AttackTower {
 	});
 	
 	private String name = "Test Tower";
-	private int gold = 100;
+	private int gold = 10;
 	private String description = "This tower is a test tower for single targets. Basic without numbers tuned";
 	
 	private String iconPath = "towers/testTower.png";
@@ -95,14 +110,30 @@ public class TestTower extends AttackTower {
 		//normalize mouse location into grid coordinates here
 		int mouseX = mouseLoc[0]/32;
 		int mouseY = mouseLoc[1]/32;
-		float[] retVal = shapeBody;
+		float[] retVal = shapeBody.clone();
 		for (int i = 0; i < retVal.length; i += 2) {
 			retVal[i] += mouseX;
 			retVal[i+1] += mouseY;
 		}
 		return retVal;
 	}
+	
+	public float[] getRangeBody() {
+		return getRangeBody(this.center);
+	}
 
+	public float[] getRangeBody(int[] mouseLoc) {
+		//normalize mouse location into grid coordinates here
+		int mouseX = mouseLoc[0]/32;
+		int mouseY = mouseLoc[1]/32;
+		float[] retVal = rangeBody.clone();
+		for (int i = 0; i < retVal.length; i += 2) {
+			retVal[i] += mouseX;
+			retVal[i+1] += mouseY;
+		}
+		return retVal;
+	}
+	
 	@Override
 	public float[] getShape(int[] mouseLoc) {
 		float[] retVal = shape.getVertices().clone();

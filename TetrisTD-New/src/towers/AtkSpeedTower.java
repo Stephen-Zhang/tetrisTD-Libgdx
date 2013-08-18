@@ -33,7 +33,7 @@ public class AtkSpeedTower extends StatusTower{
 	private float[] rangeBody = new float[] {
 		-1, -1,
 		-1, 0,
-		-1, 1
+		-1, 1,
 		-1, 2,
 		-1, 3,
 		0, 3,
@@ -121,18 +121,32 @@ public class AtkSpeedTower extends StatusTower{
 		return "Increases attack speed by"+this.buffStrengthBase+"%!";
 	}
 
-	@Override
 	public float[] getShapeBody() {
 		// TODO Auto-generated method stub
 		return getShapeBody(this.center);
 	}
 
-	@Override
 	public float[] getShapeBody(int[] mouseLoc) {
 		//normalize mouse location into grid coordinates here
 		int mouseX = mouseLoc[0]/32;
 		int mouseY = mouseLoc[1]/32;
-		float[] retVal = shapeBody;
+		float[] retVal = shapeBody.clone();
+		for (int i = 0; i < retVal.length; i += 2) {
+			retVal[i] += mouseX;
+			retVal[i+1] += mouseY;
+		}
+		return retVal;
+	}
+
+	public float[] getRangeBody() {
+		return getRangeBody(this.center);
+	}
+
+	public float[] getRangeBody(int[] mouseLoc) {
+		//normalize mouse location into grid coordinates here
+		int mouseX = mouseLoc[0]/32;
+		int mouseY = mouseLoc[1]/32;
+		float[] retVal = rangeBody.clone();
 		for (int i = 0; i < retVal.length; i += 2) {
 			retVal[i] += mouseX;
 			retVal[i+1] += mouseY;

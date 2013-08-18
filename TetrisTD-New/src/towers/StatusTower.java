@@ -1,12 +1,11 @@
 package towers;
 
-import util.StatusType;
+import java.util.HashSet;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Polygon;
+import util.StatusType;
+import util.utilityFunctions;
+
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.DelayedRemovalArray;
-import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
 
 public abstract class StatusTower implements BaseTower {
@@ -25,12 +24,22 @@ public abstract class StatusTower implements BaseTower {
 	protected int[] gridLocation = null;
 	
 	public void getTowersInRange(Array<BaseTower> towers) {
-		//Needs adjustment. for now, hits every tower on map. Need to make changes to the grid location code to fix this issue.
+
+		HashSet<Integer> flattenedRange = new HashSet<Integer>();
+		
+		for (int index : utilityFunctions.flattenShape(this.getRangeBody(), 24)) {
+			flattenedRange.add(new Integer(index));
+		}
+
 		for (BaseTower t : towers) {
-			//This range overlaps a tower's range
-			if (/*TODO*/!t.isBuffTower()) {
-				this.affectedTowers.add(t);
-				((AttackTower) t).setBuffs(this.buffs, this.id);
+			if (!t.isBuffTower()) {
+				//This range overlaps a tower's range
+				for (int t_index : t.getGridLocation()) {
+					if (flattenedRange.contains(new Integer(t_index))) {
+						this.affectedTowers.add(t);
+						((AttackTower) t).setBuffs(this.buffs, this.id);
+					}
+				}
 			}
 		}
 	}
