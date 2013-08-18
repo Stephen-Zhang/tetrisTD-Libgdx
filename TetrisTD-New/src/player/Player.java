@@ -2,10 +2,10 @@ package player;
 
 import java.util.ArrayList;
 
-import towers.AtkSpeedTower;
-import towers.BaseTower;
-import towers.TestTower;
-import towers.TowerType;
+import towers.attack.TestTower;
+import towers.base.BaseTower;
+import towers.base.TowerType;
+import towers.status.AtkSpeedTower;
 
 public class Player {
 	public int gold = 0;

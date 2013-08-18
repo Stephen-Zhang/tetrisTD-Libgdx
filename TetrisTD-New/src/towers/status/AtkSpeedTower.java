@@ -1,4 +1,4 @@
-package towers;
+package towers.status;
 
 import projectiles.Projectile;
 import util.StatusType;

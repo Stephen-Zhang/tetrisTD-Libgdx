@@ -1,7 +1,9 @@
-package towers;
+package towers.status;
 
 import java.util.HashSet;
 
+import towers.attack.AttackTower;
+import towers.base.BaseTower;
 import util.StatusType;
 import util.utilityFunctions;
 

@@ -2,7 +2,7 @@ package enemies;
 
 import java.awt.Point;
 
-import towers.AttackTower;
+import towers.attack.AttackTower;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Polygon;

@@ -2,7 +2,7 @@ package levels;
 
 import java.awt.Point;
 
-import towers.TowerType;
+import towers.base.TowerType;
 
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.utils.Array;

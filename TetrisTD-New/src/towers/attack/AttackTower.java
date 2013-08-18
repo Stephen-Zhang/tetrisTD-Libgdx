@@ -1,6 +1,8 @@
-package towers;
+package towers.attack;
 
 import projectiles.Projectile;
+import towers.base.BaseTower;
+import towers.status.AtkSpeedTower;
 import util.StatusType;
 
 import com.badlogic.gdx.utils.Array;

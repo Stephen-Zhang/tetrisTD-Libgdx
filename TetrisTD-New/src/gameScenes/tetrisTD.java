@@ -3,7 +3,7 @@ package gameScenes;
 import levels.Level;
 import player.Player;
 import projectiles.Projectile;
-import towers.BaseTower;
+import towers.base.BaseTower;
 import util.utilityFunctions;
 
 import com.badlogic.gdx.Game;

@@ -1,4 +1,4 @@
-package towers;
+package towers.attack;
 
 import projectiles.Projectile;
 import projectiles.TestBullet;
