@@ -1,16 +1,16 @@
 package util;
 
 import gameScenes.tetrisTD;
-import towers.TestTower;
-import towers.TowerType;
+import towers.base.BaseTower;
+import towers.base.TowerType;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 
 public class MyInputProcessor implements InputProcessor {
 
 	final tetrisTD game;
+	private int idGen = 0;
 	
 	public MyInputProcessor(final tetrisTD game) {
 		this.game = game;
@@ -36,10 +36,13 @@ public class MyInputProcessor implements InputProcessor {
 		if (character == 't') {
 			game.player.holding = TowerType.TEST_TOWER;
 		}
+		if (character == 'y') {
+			game.player.holding = TowerType.ATK_SPEED_TOWER;
+		}
 		if (this.game.getCurrLevel().sendEarly && !this.game.getCurrLevel().done && character == 'p') {
 			this.game.getCurrLevel().getNextWave();
 		}
-		return false;
+		return false;		
 	}
 
 	@Override
@@ -54,14 +57,21 @@ public class MyInputProcessor implements InputProcessor {
 		if (button == Input.Buttons.LEFT) {
 			if (this.game.player.holding != TowerType.NULL && this.game.player.canPlaceTower && this.game.player.gold >= this.game.player.getCostOfTower()) {
 				this.game.player.gold -= this.game.player.getCostOfTower();
-				this.game.placeTower(this.game.player.makeNewTower());
 				
+				BaseTower placeThis = this.game.player.makeNewTower(idGen++);
+				this.game.placeTower(placeThis);
+				
+				if (placeThis.isBuffTower()) {
+					placeThis.getTowersInRange(this.game.getTowers());
+				}
+				
+				this.game.player.holdingRotation = 0;
 				this.game.player.holding = TowerType.NULL;
 			}
 		} else if (button == Input.Buttons.RIGHT) {
-			//For now, right clicking gets rid of the tower.
+			//For now, right clicking rotates the shape
 			if (this.game.player.holding != TowerType.NULL) {
-				this.game.player.holding = TowerType.NULL;
+				this.game.player.holdingRotation = (this.game.player.holdingRotation + 90f) % 360f;
 			}
 		}
 		return false;

@@ -1,15 +1,18 @@
-package towers;
+package towers.attack;
 
 import projectiles.Projectile;
+import projectiles.TestBullet;
+import util.utilityFunctions;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
 
 import enemies.Enemy;
 
-public class TestTower extends Tower {
+public class TestTower extends AttackTower {
 	
 	public int key = Input.Keys.T;
 	
@@ -28,13 +31,28 @@ public class TestTower extends Tower {
 		1, 1,
 	};
 	
-	private float[] offset = new float[] {
+	private float[] rangeBody = new float[] {
+		-1, -1,
+		-1, 0,
+		-1, 1,
+		0, 1,
+		0, 2,
+		1, 2,
 		2, 2,
-		-2, 2,
-		-2, -2,
-		2, -2,
-		2, -2,
-		2, -2,
+		2, 1,
+		2, 0,
+		2, -1,
+		1, -1,
+		0, -1,
+	};
+	
+	private float[] offset = new float[] {
+		1, 1,
+		-1, 1,
+		-1, -1,
+		1, -1,
+		1, -1,
+		1, -1,
 	};
 
 	private Polygon range = new Polygon(new float[]{
@@ -47,42 +65,76 @@ public class TestTower extends Tower {
 	});
 	
 	private String name = "Test Tower";
-	private int gold = 100;
-	private String description = "This tower is a test tower for single targets.";
+	private int gold = 10;
+	private String description = "This tower is a test tower for single targets. Basic without numbers tuned";
 	
 	private String iconPath = "towers/testTower.png";
 	private String spritePath = "towers/testTower.png";
 
 	public TestTower() {
 		fireRate = 1;
+		damage = 10;
 		center = new int[]{0,0};
 	}
 	
-	public TestTower(int[] cent) {
+	public TestTower(float rotation) {
 		super();
-		center = cent;
+		
+		this.rotation = rotation;
+		shape.rotate(rotation);
+		range.rotate(rotation);
+
+		Polygon tempShapeBody = new Polygon(shapeBody);
+		tempShapeBody.rotate(rotation);
+		shapeBody = tempShapeBody.getTransformedVertices();
+
+		Polygon tempRangeBody = new Polygon(rangeBody);
+		tempRangeBody.rotate(rotation);
+		rangeBody = tempRangeBody.getTransformedVertices();
+
+		Polygon tempOffset = new Polygon(offset);
+		tempOffset.rotate(rotation);
+		offset = tempOffset.getTransformedVertices();
 	}
 	
-	@Override
+	public TestTower(int id, int[] cent, float rotation) {
+		super();
+		this.id = id;
+		center = cent;
+		
+		this.rotation = rotation;
+		//Rotate the damn shapeBody
+		shape.rotate(rotation);
+		range.rotate(rotation);
+		Polygon tempShapeBody = new Polygon(shapeBody);
+		tempShapeBody.rotate(rotation);
+		shapeBody = tempShapeBody.getTransformedVertices();
+
+		Polygon tempRangeBody = new Polygon(rangeBody);
+		tempRangeBody.rotate(rotation);
+		rangeBody = tempRangeBody.getTransformedVertices();
+
+		Polygon tempOffset = new Polygon(offset);
+		tempOffset.rotate(rotation);
+		offset = tempOffset.getTransformedVertices();
+
+	}
+	
 	public String getName() {
 		return name;
 	}
 
-	@Override
 	public String getSpritePath() {
 		return spritePath;
 	}
 
-	@Override
 	public String getIconPath() {
 		return iconPath;
 	}
 
-	@Override
 	public int getCost() {
 		return gold;
 	}
-
 	
 	public float[] getShapeBody() {
 		return getShapeBody(this.center);
@@ -97,14 +149,30 @@ public class TestTower extends Tower {
 		//normalize mouse location into grid coordinates here
 		int mouseX = mouseLoc[0]/32;
 		int mouseY = mouseLoc[1]/32;
-		float[] retVal = shapeBody;
+		float[] retVal = shapeBody.clone();
 		for (int i = 0; i < retVal.length; i += 2) {
 			retVal[i] += mouseX;
 			retVal[i+1] += mouseY;
 		}
 		return retVal;
 	}
+	
+	public float[] getRangeBody() {
+		return getRangeBody(this.center);
+	}
 
+	public float[] getRangeBody(int[] mouseLoc) {
+		//normalize mouse location into grid coordinates here
+		int mouseX = mouseLoc[0]/32;
+		int mouseY = mouseLoc[1]/32;
+		float[] retVal = rangeBody.clone();
+		for (int i = 0; i < retVal.length; i += 2) {
+			retVal[i] += mouseX;
+			retVal[i+1] += mouseY;
+		}
+		return retVal;
+	}
+	
 	@Override
 	public float[] getShape(int[] mouseLoc) {
 		float[] retVal = shape.getVertices().clone();
@@ -125,23 +193,21 @@ public class TestTower extends Tower {
 		for (int i = 0; i < retVal.length; i++ ) {
 			if (i % 2 == 0) {
 				//Even and 0
-				retVal[i] += mouseLoc[0];
+				retVal[i] += offset[i] + mouseLoc[0];
 			} else {
-				retVal[i] += mouseLoc[1];
+				retVal[i] += offset[i] + mouseLoc[1];
 			}
 		}
 		return retVal;
 	}
 
-	@Override
 	public String getDescript() {
 		return description;
 	}
 
-	@Override
 	public void acquireTargets(DelayedRemovalArray<Enemy> enemies) {
 		//Lose old targets
-		if (this.target.size > 0 && Intersector.overlapConvexPolygons(this.target.get(0).getHitbox(), this.range)) {
+		if (this.target.size > 0 && !Intersector.overlapConvexPolygons(this.target.get(0).getHitbox(), this.range)) {
 			this.target.get(0).towersAttacking.removeValue(this, false);
 			this.target.removeIndex(0);
 		}
@@ -164,10 +230,9 @@ public class TestTower extends Tower {
 		}
 	}
 
-	@Override
 	public void fire(DelayedRemovalArray<Projectile> bullets) {
 		for (Enemy e : this.target) {
-			bullets.add(new TestBullet(e, this.center.clone()));
+			bullets.add(new TestBullet(e, this.damage, this.center.clone()));
 		}
 	}
 

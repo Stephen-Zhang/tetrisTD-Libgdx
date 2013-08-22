@@ -7,8 +7,10 @@ import levels.Level;
 import levels.LevelOne;
 import player.Player;
 import projectiles.Projectile;
-import towers.Tower;
-import towers.TowerType;
+import towers.attack.AttackTower;
+import towers.base.BaseTower;
+import towers.base.TowerType;
+import towers.status.StatusTower;
 import util.MyInputProcessor;
 import util.OverlayInputProcessor;
 import util.utilityFunctions;
@@ -20,6 +22,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.MapProperties;
@@ -27,7 +30,6 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
 
@@ -56,9 +58,9 @@ public class GameScreen implements Screen {
 		Texture.setEnforcePotImages(false);
 		this.game = game;
 		this.game.enemies = new DelayedRemovalArray<Enemy>();
-		this.game.towers = new Array<Tower>();
+		this.game.towers = new Array<BaseTower>();
 		this.game.bullets = new DelayedRemovalArray<Projectile>();
-		this.game.field = new boolean[fieldWidth*fieldHeight];
+		this.game.field = new Integer[fieldWidth*fieldHeight];
 		
 		gameProcessor = new MyInputProcessor(game);
 		overlayProcessor = new OverlayInputProcessor(game);
@@ -86,8 +88,10 @@ public class GameScreen implements Screen {
 		renderer.render();
 		
 		//Update time trackers
-		totalTime += Gdx.graphics.getDeltaTime()*1000;
-		this.game.getCurrLevel().updateLevelTime(delta*1000);		
+		if (this.textEvent == "") {
+			totalTime += Gdx.graphics.getDeltaTime()*1000;
+			this.game.getCurrLevel().updateLevelTime(delta*1000);		
+		}
 		
 		/*************************************************************************
 		*
@@ -136,22 +140,18 @@ public class GameScreen implements Screen {
 		if (game.player.holding != TowerType.NULL) {
 			ShapeRenderer drawShapes = new ShapeRenderer();
 
-			float[] shapeVertices = game.player.getTowerShape();
-			float[] shapeBody = game.player.getTowerShapeBody();
-
-			this.game.player.canPlaceTower = canPlace(shapeBody);
-			//this.game.player.canPlaceTower = canPutDown(shapeVertices);
+			this.game.player.canPlaceTower = canPlace(game.player.getTowerShapeBody());
 			
 			Gdx.gl10.glLineWidth(2);
 			drawShapes.begin(ShapeType.Line);
 			if (this.game.player.canPlaceTower && this.game.player.gold >= this.game.player.getCostOfTower()) {
 				drawShapes.setColor(new Color(Color.GREEN));
-				drawShapes.polygon(shapeVertices);
+				drawShapes.polygon(game.player.getTowerShape());
 				drawShapes.setColor(new Color(Color.BLUE));
 				drawShapes.polygon(game.player.getTowerRange());
 			} else {
 				drawShapes.setColor(new Color(Color.RED));
-				drawShapes.polygon(shapeVertices);
+				drawShapes.polygon(game.player.getTowerShape());
 			}
 
 			Gdx.gl10.glLineWidth(1);
@@ -166,7 +166,7 @@ public class GameScreen implements Screen {
 		}
 		
 		//Towers
-		for (Tower t : this.game.towers) {
+		for (BaseTower t : this.game.towers) {
 			game.batch.draw(new Texture(t.getSpritePath()), t.getCenter()[0], t.getCenter()[1]);
 		}
 		
@@ -244,9 +244,24 @@ public class GameScreen implements Screen {
 				}
 			}
 			
-			for (Tower t: this.game.towers) {
-				t.acquireTargets(this.game.enemies);
-				t.fire(this.game.bullets);
+			for (BaseTower t: this.game.towers) {
+				if (t.isBuffTower()) {
+					StatusTower buffT = (StatusTower) t;
+				} else {
+					AttackTower atkT = (AttackTower) t;
+					atkT.buffUpdate(this.game.towers);
+					atkT.acquireTargets(this.game.enemies);
+					if(atkT.getCanFire()) {
+						atkT.setCooldown(0);
+						atkT.fire(this.game.bullets);
+						atkT.setCanFire(false);
+					} else {
+						atkT.setCooldown(atkT.getCooldown() + Gdx.graphics.getDeltaTime());
+						if (atkT.getCooldown() >= atkT.getFireRate()) {
+							atkT.setCanFire(true);
+						}
+					}					
+				}
 			}
 			
 			for (Projectile p : this.game.bullets) {
@@ -259,7 +274,7 @@ public class GameScreen implements Screen {
 					p.target.setCurrHealth(p.target.getCurrHealth() - p.damage);
 					if (p.target.getCurrHealth() < 0) {
 						//Dead
-						for (Tower t : p.target.towersAttacking) {
+						for (AttackTower t : p.target.towersAttacking) {
 							t.target.removeValue(p.target, false);
 						}
 						this.game.player.gold += p.target.bounty;
@@ -270,32 +285,6 @@ public class GameScreen implements Screen {
 			}	
 		}
 	}
-
-	private boolean canPutDown(float[] shapeVertices) {
-		// TODO Auto-generated method stub
-		TiledMapTileLayer tiledLayer = (TiledMapTileLayer)map.getLayers().get(0);
-		for (int i = 0; i < shapeVertices.length-1; i+=2) {
-			//Normalized X and Y into the center of each tile.
-			int x = (int)((shapeVertices[i])/32);
-			int y = (int)((shapeVertices[i+1])/32);
-			
-			MapProperties tProps = tiledLayer.getCell(x, y).getTile().getProperties();
-			if (tProps.containsKey("buildable")) {
-				if (tProps.get("buildable").equals("no")) {
-					return false;
-				}
-			}
-		}
-		Polygon mouseShape = new Polygon(shapeVertices);
-		Polygon tempPolygon;
-		for (Tower t : this.game.towers) {
-			tempPolygon = new Polygon(t.getShape(t.getCenter()));
-			if (Intersector.overlapConvexPolygons(tempPolygon, mouseShape)) {
-				return false;
-			}
-		}
-		return true;
-	}
 	
 	/**
 	 * Takes in grid coordinates of a shape (tower, eg) and returns if it can be placed
@@ -305,13 +294,12 @@ public class GameScreen implements Screen {
 	private boolean canPlace(float[] shapeBody) {
 		int[] flattenedShape = utilityFunctions.flattenShape(shapeBody, fieldWidth);
 
-		boolean occupied = false;
-		for (int i = 0; i < flattenedShape.length && !occupied; i++) {
+		for (int i = 0; i < flattenedShape.length; i++) {
 			if (flattenedShape[i] >= this.game.field.length) return false;	//HACK: returns false when mouse outside screen range
-			occupied |= this.game.field[flattenedShape[i]];
+			if (this.game.field[flattenedShape[i]] != null) {
+				return false;
+			}
 		}
-		if (occupied) 
-			return false;
 		
 		TiledMapTileLayer tiledLayer = (TiledMapTileLayer)map.getLayers().get(0);
 		for (int i = 0; i < shapeBody.length-1; i+=2) {

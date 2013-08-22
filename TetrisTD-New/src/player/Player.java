@@ -2,16 +2,16 @@ package player;
 
 import java.util.ArrayList;
 
-import towers.TestTower;
-import towers.Tower;
-import towers.TowerType;
-
-import com.badlogic.gdx.math.Polygon;
+import towers.attack.TestTower;
+import towers.base.BaseTower;
+import towers.base.TowerType;
+import towers.status.AtkSpeedTower;
 
 public class Player {
 	public int gold = 0;
 	public int lives;
 	public TowerType holding = TowerType.NULL;
+	public float holdingRotation = 0;
 	public ArrayList<TowerType> availTowers = new ArrayList<TowerType>();
 	
 	public int[] currMouseLoc = new int[2];
@@ -46,14 +46,16 @@ public class Player {
 		}
 	}
 
-	public Tower makeNewTower() {
+	public BaseTower makeNewTower(int id) {
 		switch(holding) {
 		case TEST_TOWER: 
-			return new TestTower(this.currMouseLoc);
+			return new TestTower(id, this.currMouseLoc, this.holdingRotation);
 		case NULL: 
 			return null;
 		case TEST_AOE_TOWER:
 			break;
+		case ATK_SPEED_TOWER:
+			return new AtkSpeedTower(id, this.currMouseLoc, this.holdingRotation);
 		default:
 			break;
 		}
@@ -64,11 +66,13 @@ public class Player {
 		// TODO Auto-generated method stub
 		switch(holding) {
 		case TEST_TOWER:
-			return new TestTower().getCost();
+			return new TestTower(this.holdingRotation).getCost();
 		case NULL:
 			return 0;
 		case TEST_AOE_TOWER:
 			break;
+		case ATK_SPEED_TOWER:
+			return new AtkSpeedTower(this.holdingRotation).getCost();
 		default:
 			break;
 		}
@@ -79,11 +83,13 @@ public class Player {
 		// TODO Auto-generated method stub
 		switch(holding) {
 		case TEST_TOWER:
-			return new TestTower().getShape(this.currMouseLoc);
+			return new TestTower(this.holdingRotation).getShape(this.currMouseLoc);
 		case NULL:
 			return null;
 		case TEST_AOE_TOWER:
 			break;
+		case ATK_SPEED_TOWER:
+			return new AtkSpeedTower(this.holdingRotation).getShape(this.currMouseLoc);
 		default:
 			break;
 		}
@@ -94,11 +100,13 @@ public class Player {
 		// TODO Auto-generated method stub
 		switch(holding) {
 		case TEST_TOWER:
-			return new TestTower().getShapeBody(this.currMouseLoc);
+			return new TestTower(this.holdingRotation).getShapeBody(this.currMouseLoc);
 		case NULL:
 			return null;
 		case TEST_AOE_TOWER:
 			break;
+		case ATK_SPEED_TOWER:
+			return new AtkSpeedTower(this.holdingRotation).getShapeBody(this.currMouseLoc);
 		default:
 			break;
 		}
@@ -109,13 +117,16 @@ public class Player {
 		// TODO Auto-generated method stub
 		switch(holding) {
 		case TEST_TOWER:
-			return new TestTower().getRange(this.currMouseLoc);
+			return new TestTower(this.holdingRotation).getRange(this.currMouseLoc);
 		case NULL:
 			return null;
 		case TEST_AOE_TOWER:
 			break;
+		case ATK_SPEED_TOWER:
+			return new AtkSpeedTower(this.holdingRotation).getRange(this.currMouseLoc);
 		default:
 			break;
 		}
 		return null;
-	}}
+	}
+}

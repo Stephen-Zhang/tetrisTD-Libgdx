@@ -14,9 +14,13 @@ public class utilityFunctions {
 		return retVal;
 	}
 	
-	/* Jacked from http://slick.javaunlimited.net/viewtopic.php?t=3778 */
-	
-	//Wraps the given string into a list of split lines based on the width
+	/**
+	 *  Wraps the given string into a list of split lines based on the width
+	 *  @author http://slick.javaunlimited.net/viewtopic.php?t=3778
+	 *  @param text The text to be broken into lines
+	 *  @param font The Bitmap font that determines width of characters
+	 *  @param width The width of a line before breaking it.
+	 */
     public static List<String> wrap(String text, BitmapFont font, int width) {
         //A less accurate but more efficient wrap would be to specify the max 
         //number of columns (e.g. using the width of the 'M' character or something). 

@@ -2,7 +2,7 @@ package enemies;
 
 import java.awt.Point;
 
-import towers.Tower;
+import towers.attack.AttackTower;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Polygon;
@@ -38,7 +38,7 @@ public abstract class Enemy {
 	protected double walkSpeed = 1;
 	public Texture sprite;
 
-	public DelayedRemovalArray<Tower> towersAttacking = new DelayedRemovalArray<Tower>();
+	public DelayedRemovalArray<AttackTower> towersAttacking = new DelayedRemovalArray<AttackTower>();
 	public boolean alive = true;
 	public int bounty;
 	

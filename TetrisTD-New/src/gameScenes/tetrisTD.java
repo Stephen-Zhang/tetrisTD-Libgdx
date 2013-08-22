@@ -3,12 +3,13 @@ package gameScenes;
 import levels.Level;
 import player.Player;
 import projectiles.Projectile;
-import towers.Tower;
+import towers.base.BaseTower;
 import util.utilityFunctions;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
 
@@ -20,9 +21,9 @@ public class tetrisTD extends Game {
 	BitmapFont font;
 	public Player player;
 	protected DelayedRemovalArray<Enemy> enemies;
-	protected Array<Tower> towers;
+	protected Array<BaseTower> towers;
 	protected DelayedRemovalArray<Projectile> bullets;
-	protected boolean[] field;
+	protected Integer[] field;
 	private Level currLevel;
 
 	public Level getCurrLevel() {
@@ -33,11 +34,11 @@ public class tetrisTD extends Game {
 		this.currLevel = currLevel;
 	}
 
-	public boolean[] getField() {
+	public Integer[] getField() {
 		return field;
 	}
 	
-	public void setField(boolean[] field) {
+	public void setField(Integer[] field) {
 		this.field = field;
 	}
 	
@@ -57,19 +58,20 @@ public class tetrisTD extends Game {
 		this.enemies = enemies;
 	}
 
-	public Array<Tower> getTowers() {
+	public Array<BaseTower> getTowers() {
 		return towers;
 	}
 
-	public void setTowers(Array<Tower> towers) {
+	public void setTowers(Array<BaseTower> towers) {
 		this.towers = towers;
 	}
 	
-	public void placeTower(Tower tower) {
+	public void placeTower(BaseTower tower) {
 		this.towers.add(tower);
-		for (int i : utilityFunctions.flattenShape(tower.getShapeBody(), 24)) {
-			this.field[i] = true;
-		}		
+		tower.setGridLocation(utilityFunctions.flattenShape(tower.getShapeBody(), 24));
+		for (int i : tower.getGridLocation()) { 
+			this.field[i] = tower.getId();
+		}
 	}
 
 	@Override

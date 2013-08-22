@@ -1,6 +1,6 @@
 package levels;
 
-import towers.TowerType;
+import towers.base.TowerType;
 
 import com.badlogic.gdx.utils.Array;
 

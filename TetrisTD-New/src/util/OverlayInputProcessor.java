@@ -1,8 +1,8 @@
 package util;
 
 import gameScenes.tetrisTD;
-import towers.TestTower;
-import towers.TowerType;
+import towers.attack.TestTower;
+import towers.base.TowerType;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
