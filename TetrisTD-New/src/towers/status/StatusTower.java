@@ -19,6 +19,7 @@ public abstract class StatusTower implements BaseTower {
 	 */
 	protected double buffStrengthBase = .20;
 	
+	protected float rotation = 0;
 	protected int[] center;
 
 	protected Array<BaseTower> affectedTowers = new Array<BaseTower>();
@@ -69,4 +70,9 @@ public abstract class StatusTower implements BaseTower {
 	public double getBuffStrength() {
 		return buffStrengthBase / affectedTowers.size;
 	}
+
+	public float getRotation() {
+		return rotation;
+	}
+	
 }

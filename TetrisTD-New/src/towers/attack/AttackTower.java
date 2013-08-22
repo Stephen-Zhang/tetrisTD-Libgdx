@@ -20,6 +20,7 @@ public abstract class AttackTower implements BaseTower{
 	 * cooldown value : seconds
 	 * canFire  value : boolean
 	 */
+	protected float rotation = 0;
 	protected double fireRate = 1;
 	protected int damage = 10;
 	protected boolean canFire = true;
@@ -107,6 +108,10 @@ public abstract class AttackTower implements BaseTower{
 
 	public void getTowersInRange(Array<BaseTower> array) {
 		//Do nothing. Doesn't need to know what towers are in range of it yet.
+	}
+
+	public float getRotation() {
+		return rotation;
 	}
 
 	public abstract void acquireTargets(DelayedRemovalArray<Enemy> enemies);

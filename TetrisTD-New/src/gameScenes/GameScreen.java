@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.MapProperties;
@@ -139,22 +140,18 @@ public class GameScreen implements Screen {
 		if (game.player.holding != TowerType.NULL) {
 			ShapeRenderer drawShapes = new ShapeRenderer();
 
-			float[] shapeVertices = game.player.getTowerShape();
-			float[] shapeBody = game.player.getTowerShapeBody();
-
-			this.game.player.canPlaceTower = canPlace(shapeBody);
-			//this.game.player.canPlaceTower = canPutDown(shapeVertices);
+			this.game.player.canPlaceTower = canPlace(game.player.getTowerShapeBody());
 			
 			Gdx.gl10.glLineWidth(2);
 			drawShapes.begin(ShapeType.Line);
 			if (this.game.player.canPlaceTower && this.game.player.gold >= this.game.player.getCostOfTower()) {
 				drawShapes.setColor(new Color(Color.GREEN));
-				drawShapes.polygon(shapeVertices);
+				drawShapes.polygon(game.player.getTowerShape());
 				drawShapes.setColor(new Color(Color.BLUE));
 				drawShapes.polygon(game.player.getTowerRange());
 			} else {
 				drawShapes.setColor(new Color(Color.RED));
-				drawShapes.polygon(shapeVertices);
+				drawShapes.polygon(game.player.getTowerShape());
 			}
 
 			Gdx.gl10.glLineWidth(1);

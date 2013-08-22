@@ -2,10 +2,12 @@ package towers.attack;
 
 import projectiles.Projectile;
 import projectiles.TestBullet;
+import util.utilityFunctions;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
 
 import enemies.Enemy;
@@ -75,10 +77,47 @@ public class TestTower extends AttackTower {
 		center = new int[]{0,0};
 	}
 	
-	public TestTower(int id, int[] cent) {
+	public TestTower(float rotation) {
+		super();
+		
+		this.rotation = rotation;
+		shape.rotate(rotation);
+		range.rotate(rotation);
+
+		Polygon tempShapeBody = new Polygon(shapeBody);
+		tempShapeBody.rotate(rotation);
+		shapeBody = tempShapeBody.getTransformedVertices();
+
+		Polygon tempRangeBody = new Polygon(rangeBody);
+		tempRangeBody.rotate(rotation);
+		rangeBody = tempRangeBody.getTransformedVertices();
+
+		Polygon tempOffset = new Polygon(offset);
+		tempOffset.rotate(rotation);
+		offset = tempOffset.getTransformedVertices();
+	}
+	
+	public TestTower(int id, int[] cent, float rotation) {
 		super();
 		this.id = id;
 		center = cent;
+		
+		this.rotation = rotation;
+		//Rotate the damn shapeBody
+		shape.rotate(rotation);
+		range.rotate(rotation);
+		Polygon tempShapeBody = new Polygon(shapeBody);
+		tempShapeBody.rotate(rotation);
+		shapeBody = tempShapeBody.getTransformedVertices();
+
+		Polygon tempRangeBody = new Polygon(rangeBody);
+		tempRangeBody.rotate(rotation);
+		rangeBody = tempRangeBody.getTransformedVertices();
+
+		Polygon tempOffset = new Polygon(offset);
+		tempOffset.rotate(rotation);
+		offset = tempOffset.getTransformedVertices();
+
 	}
 	
 	public String getName() {

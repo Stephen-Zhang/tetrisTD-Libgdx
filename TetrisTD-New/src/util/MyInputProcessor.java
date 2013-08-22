@@ -65,12 +65,13 @@ public class MyInputProcessor implements InputProcessor {
 					placeThis.getTowersInRange(this.game.getTowers());
 				}
 				
+				this.game.player.holdingRotation = 0;
 				this.game.player.holding = TowerType.NULL;
 			}
 		} else if (button == Input.Buttons.RIGHT) {
-			//For now, right clicking gets rid of the tower.
+			//For now, right clicking rotates the shape
 			if (this.game.player.holding != TowerType.NULL) {
-				this.game.player.holding = TowerType.NULL;
+				this.game.player.holdingRotation = (this.game.player.holdingRotation + 90f) % 360f;
 			}
 		}
 		return false;

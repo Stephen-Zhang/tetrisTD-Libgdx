@@ -55,12 +55,38 @@ public class AtkSpeedTower extends StatusTower{
 	public AtkSpeedTower() {
 		
 	}
+
+	public AtkSpeedTower(float rotation) {
+		this.rotation = rotation;
+		shape.rotate(rotation);
+		range.rotate(rotation);
+		Polygon tempShapeBody = new Polygon(shapeBody);
+		tempShapeBody.rotate(rotation);
+		shapeBody = tempShapeBody.getTransformedVertices();
+
+		Polygon tempRangeBody = new Polygon(rangeBody);
+		tempRangeBody.rotate(rotation);
+		rangeBody = tempRangeBody.getTransformedVertices();
+	}
 	
-	public AtkSpeedTower(int id, int[] center) {
+	public AtkSpeedTower(int id, int[] center, float rotation) {
 		this.id = id;
 		this.center = center;
 		this.buffs.add(StatusType.INCREASE_ATK_SPEED);
 		this.buffStrengthBase = .50; //50% atkSpeed
+				
+		this.rotation = rotation;
+		//Rotate the damn shapeBody
+		shape.rotate(rotation);
+		range.rotate(rotation);
+		Polygon tempShapeBody = new Polygon(shapeBody);
+		tempShapeBody.rotate(rotation);
+		shapeBody = tempShapeBody.getTransformedVertices();
+
+		Polygon tempRangeBody = new Polygon(rangeBody);
+		tempRangeBody.rotate(rotation);
+		rangeBody = tempRangeBody.getTransformedVertices();
+
 	}
 	
 	@Override

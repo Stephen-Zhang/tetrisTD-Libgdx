@@ -29,5 +29,6 @@ public interface BaseTower {
 	
 	public boolean isBuffTower();
 	
+	public float getRotation();
 	public void getTowersInRange(Array<BaseTower> array);
 }
