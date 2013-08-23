@@ -1,11 +1,15 @@
 package util;
 
 import gameScenes.tetrisTD;
+
+import java.util.HashMap;
+
 import towers.base.BaseTower;
 import towers.base.TowerType;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.math.Rectangle;
 
 public class MyInputProcessor implements InputProcessor {
 
@@ -86,6 +90,27 @@ public class MyInputProcessor implements InputProcessor {
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
 		this.game.player.currMouseLoc = new int[]{screenX - screenX%32, 768 - 32 - screenY + screenY%32};
+		
+		int[] uninvertedCoors = new int[]{screenX - 32 - screenX%32, 768 - 32 - screenY + screenY%32};
+		
+		//Not holding anything.
+		if (this.game.player.holding == TowerType.NULL) {
+
+			//Hover over an icon...
+			BaseTower hovering = null;
+			HashMap<Rectangle, BaseTower> iconSetMap = this.game.getGfxUserInterface().getIconToTower();
+			for (Rectangle rect : iconSetMap.keySet()) {
+				if (rect.contains(uninvertedCoors[0], uninvertedCoors[1])) {
+					//Hovering over a mouse, set hovering to that tower
+					hovering = iconSetMap.get(rect);
+					System.out.println(hovering);
+					break;
+				}
+			}
+
+			this.game.getGfxUserInterface().setHovering(hovering);
+		}
+
 		return false;
 	}
 

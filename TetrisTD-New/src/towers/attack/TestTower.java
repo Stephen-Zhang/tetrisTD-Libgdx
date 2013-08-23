@@ -68,8 +68,8 @@ public class TestTower extends AttackTower {
 	private int gold = 10;
 	private String description = "This tower is a test tower for single targets. Basic without numbers tuned";
 	
-	private String iconPath = "towers/testTower.png";
-	private String spritePath = "towers/testTower.png";
+	private String iconPath = "towers/icons/testTowerIcon.png";
+	private String spritePath = "towers/sprites/testTowerSprite.png";
 
 	public TestTower() {
 		fireRate = 1;
@@ -81,6 +81,8 @@ public class TestTower extends AttackTower {
 		super();
 		
 		this.rotation = rotation;
+		shape.setOrigin(16, 16);
+		range.setOrigin(16, 16);
 		shape.rotate(rotation);
 		range.rotate(rotation);
 
@@ -103,7 +105,10 @@ public class TestTower extends AttackTower {
 		center = cent;
 		
 		this.rotation = rotation;
+		
 		//Rotate the damn shapeBody
+		shape.setOrigin(16, 16);
+		range.setOrigin(16, 16);
 		shape.rotate(rotation);
 		range.rotate(rotation);
 		Polygon tempShapeBody = new Polygon(shapeBody);
@@ -175,7 +180,7 @@ public class TestTower extends AttackTower {
 	
 	@Override
 	public float[] getShape(int[] mouseLoc) {
-		float[] retVal = shape.getVertices().clone();
+		float[] retVal = shape.getTransformedVertices().clone();
 		for (int i = 0; i < retVal.length; i++ ) {
 			if (i % 2 == 0) {
 				//Even and 0
@@ -189,7 +194,7 @@ public class TestTower extends AttackTower {
 
 	@Override
 	public float[] getRange(int[] mouseLoc) {
-		float[] retVal = range.getVertices().clone();
+		float[] retVal = range.getTransformedVertices().clone();
 		for (int i = 0; i < retVal.length; i++ ) {
 			if (i % 2 == 0) {
 				//Even and 0

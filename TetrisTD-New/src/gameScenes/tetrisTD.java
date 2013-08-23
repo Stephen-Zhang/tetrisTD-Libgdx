@@ -25,6 +25,7 @@ public class tetrisTD extends Game {
 	protected DelayedRemovalArray<Projectile> bullets;
 	protected Integer[] field;
 	private Level currLevel;
+	protected GameOverlay gfxUserInterface;
 
 	public Level getCurrLevel() {
 		return currLevel;
@@ -73,6 +74,15 @@ public class tetrisTD extends Game {
 			this.field[i] = tower.getId();
 		}
 	}
+
+	public GameOverlay getGfxUserInterface() {
+		return gfxUserInterface;
+	}
+
+	public void setGfxUserInterface(GameOverlay gfxUserInterface) {
+		this.gfxUserInterface = gfxUserInterface;
+	}
+
 
 	@Override
 	public void create() {

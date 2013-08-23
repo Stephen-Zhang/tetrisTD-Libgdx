@@ -61,6 +61,7 @@ public class GameScreen implements Screen {
 		this.game.towers = new Array<BaseTower>();
 		this.game.bullets = new DelayedRemovalArray<Projectile>();
 		this.game.field = new Integer[fieldWidth*fieldHeight];
+		this.game.gfxUserInterface = new GameOverlay(this.game);
 		
 		gameProcessor = new MyInputProcessor(game);
 		overlayProcessor = new OverlayInputProcessor(game);
@@ -98,43 +99,10 @@ public class GameScreen implements Screen {
 		**DRAWING STARTS HERE
 		*
 		**************************************************************************/
+		game.gfxUserInterface.drawOverlay();
+		
 		game.batch.begin();
-		
-		//Draw Menu
-		game.font.setColor(new Color(Color.WHITE));
-		if (game.player.lives > 0) {
-			game.font.draw(game.batch, "Lives: "+game.player.lives, 840, 732);
-			game.font.draw(game.batch, "Gold: "+game.player.gold, 840, 700);
-		} else {
-			List<String> gameOverMsg = utilityFunctions.wrap("Game Over! Unfortunately you have no more lives left.", game.font, 150);
-			Iterator<String> iter = gameOverMsg.iterator();
-			int height = 668;
-			while(iter.hasNext()) {
-				game.font.draw(game.batch, iter.next(), 840, height);
-				height -= game.font.getLineHeight();
-			}
-		}
-		
-		//Send Early Message
-		if (!this.game.getCurrLevel().nextWaveAvail() && this.game.enemies.size == 0) {
-			this.game.getCurrLevel().done = true;
-			List<String> lvlComplete = utilityFunctions.wrap("You finished this level! For now, theres nothing else to do. Congratulations!", game.font, 150);
-			Iterator<String> iter = lvlComplete.iterator();
-			int height = 668;
-			while (iter.hasNext()) {
-				game.font.draw(game.batch, iter.next(), 840, height);
-				height -= game.font.getLineHeight();
-			}
-		} else if (this.game.getCurrLevel().sendEarly) {
-			List<String> sendEarlyMsg = utilityFunctions.wrap("You finished this wave! You may send the next wave early if you press the key P on the keyboard.", game.font, 150);
-			Iterator<String> iter = sendEarlyMsg.iterator();
-			int height = 668;
-			while (iter.hasNext()) {
-				game.font.draw(game.batch, iter.next(), 840, height);
-				height -= game.font.getLineHeight();
-			}
-		}
-		
+		//Draw Icons
 
 		//Draw mouse buildings
 		if (game.player.holding != TowerType.NULL) {
@@ -167,7 +135,8 @@ public class GameScreen implements Screen {
 		
 		//Towers
 		for (BaseTower t : this.game.towers) {
-			game.batch.draw(new Texture(t.getSpritePath()), t.getCenter()[0], t.getCenter()[1]);
+			//game.batch.draw(new Texture(t.getSpritePath()), t.getCenter()[0], t.getCenter()[1]);
+			game.batch.draw(new TextureRegion(new Texture(t.getSpritePath())), t.getCenter()[0], t.getCenter()[1], 16, 16, 96, 96, 1, 1, t.getRotation());
 		}
 		
 		//Bullets

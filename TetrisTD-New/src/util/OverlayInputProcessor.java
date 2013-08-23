@@ -56,6 +56,7 @@ public class OverlayInputProcessor implements InputProcessor {
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
 		this.game.player.currMouseLoc = new int[]{screenX - screenX%32, 768 - 32 - screenY + screenY%32};
+		
 		return false;
 	}
 

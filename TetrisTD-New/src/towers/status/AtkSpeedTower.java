@@ -49,8 +49,8 @@ public class AtkSpeedTower extends StatusTower{
 	private int gold = 50;
 	private String description = "This tower is a test tower for status buffs.";
 	
-	private String iconPath = "towers/atkSpeedTower.png";
-	private String spritePath = "towers/atkSpeedTower.png";	
+	private String iconPath = "towers/icons/atkSpeedTowerIcon.png";
+	private String spritePath = "towers/sprites/atkSpeedTowerSprite.png";	
 	
 	public AtkSpeedTower() {
 		
@@ -58,6 +58,10 @@ public class AtkSpeedTower extends StatusTower{
 
 	public AtkSpeedTower(float rotation) {
 		this.rotation = rotation;
+		
+		shape.setOrigin(16, 16);
+		range.setOrigin(16, 16);
+
 		shape.rotate(rotation);
 		range.rotate(rotation);
 		Polygon tempShapeBody = new Polygon(shapeBody);
@@ -77,6 +81,9 @@ public class AtkSpeedTower extends StatusTower{
 				
 		this.rotation = rotation;
 		//Rotate the damn shapeBody
+		shape.setOrigin(16, 16);
+		range.setOrigin(16, 16);
+
 		shape.rotate(rotation);
 		range.rotate(rotation);
 		Polygon tempShapeBody = new Polygon(shapeBody);
@@ -115,7 +122,7 @@ public class AtkSpeedTower extends StatusTower{
 
 	@Override
 	public float[] getShape(int[] mouseLoc) {
-		float[] retVal = shape.getVertices().clone();
+		float[] retVal = shape.getTransformedVertices().clone();
 		for (int i = 0; i < retVal.length; i++ ) {
 			if (i % 2 == 0) {
 				//Even and 0
@@ -129,7 +136,7 @@ public class AtkSpeedTower extends StatusTower{
 
 	@Override
 	public float[] getRange(int[] mouseLoc) {
-		float[] retVal = range.getVertices().clone();
+		float[] retVal = range.getTransformedVertices().clone();
 		for (int i = 0; i < retVal.length; i++ ) {
 			if (i % 2 == 0) {
 				//Even and 0

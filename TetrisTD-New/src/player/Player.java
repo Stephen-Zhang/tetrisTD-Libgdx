@@ -1,6 +1,7 @@
 package player;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import towers.attack.TestTower;
 import towers.base.BaseTower;
@@ -13,13 +14,12 @@ public class Player {
 	public TowerType holding = TowerType.NULL;
 	public float holdingRotation = 0;
 	public ArrayList<TowerType> availTowers = new ArrayList<TowerType>();
-	
+
 	public int[] currMouseLoc = new int[2];
 	public boolean canPlaceTower = true;
 
 	public Player(int life) {
 		lives = life;
-
 	}
 	
 	public Player(int life, int gold) {
