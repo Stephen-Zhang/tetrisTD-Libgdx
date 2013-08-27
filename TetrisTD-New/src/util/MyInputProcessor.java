@@ -71,6 +71,9 @@ public class MyInputProcessor implements InputProcessor {
 				
 				this.game.player.holdingRotation = 0;
 				this.game.player.holding = TowerType.NULL;
+			} else if (this.game.getGfxUserInterface().getHovering() != null) {
+				
+				this.game.player.holding = this.game.getGfxUserInterface().getHovering().getTowerType();
 			}
 		} else if (button == Input.Buttons.RIGHT) {
 			//For now, right clicking rotates the shape
@@ -91,7 +94,7 @@ public class MyInputProcessor implements InputProcessor {
 	public boolean mouseMoved(int screenX, int screenY) {
 		this.game.player.currMouseLoc = new int[]{screenX - screenX%32, 768 - 32 - screenY + screenY%32};
 		
-		int[] uninvertedCoors = new int[]{screenX - 32 - screenX%32, 768 - 32 - screenY + screenY%32};
+		int[] unroundedMouse = new int[]{screenX, 768 - screenY};
 		
 		//Not holding anything.
 		if (this.game.player.holding == TowerType.NULL) {
@@ -100,10 +103,9 @@ public class MyInputProcessor implements InputProcessor {
 			BaseTower hovering = null;
 			HashMap<Rectangle, BaseTower> iconSetMap = this.game.getGfxUserInterface().getIconToTower();
 			for (Rectangle rect : iconSetMap.keySet()) {
-				if (rect.contains(uninvertedCoors[0], uninvertedCoors[1])) {
+				if (rect.contains(unroundedMouse[0], unroundedMouse[1])) {
 					//Hovering over a mouse, set hovering to that tower
 					hovering = iconSetMap.get(rect);
-					System.out.println(hovering);
 					break;
 				}
 			}

@@ -1,9 +1,11 @@
 package util;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class utilityFunctions {
 	public static float[] doubleToFloat(double[] doubleArr) {
@@ -90,6 +92,27 @@ public class utilityFunctions {
 			retVal[i] = (int)(shapeBody[2*i] + fieldWidth*shapeBody[2*i+1]);
 		}
 		return retVal;
+    }
+    
+    /**
+     * A helper method to produce drawn text on the screen. Always will segment into the specified widths per line.
+     * 
+     * @param game game to supply spriteBatch and font
+     * @param text text to be wrapped
+     * @param x x starting coordinate of the text
+     * @param y y starting coordinate of the text
+     * @param widthPerLine width per line before line break
+     * @return final y after y has been decreased
+     */
+    public static int drawText(BitmapFont font, SpriteBatch batch, String text, int x, int y, int widthPerLine) {
+		List<String> description = utilityFunctions.wrap(text, font, 150);
+		Iterator<String> iter = description.iterator();
+		while (iter.hasNext()) {
+			font.draw(batch, iter.next(), 850, y);
+			y -= font.getLineHeight();
+		}
+    	
+    	return y;
     }
     
 }

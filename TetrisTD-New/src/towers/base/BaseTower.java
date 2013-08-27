@@ -31,4 +31,6 @@ public interface BaseTower {
 	
 	public float getRotation();
 	public void getTowersInRange(Array<BaseTower> array);
+	
+	public TowerType getTowerType();
 }

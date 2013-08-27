@@ -1,6 +1,7 @@
 package towers.status;
 
 import projectiles.Projectile;
+import towers.base.TowerType;
 import util.StatusType;
 
 import com.badlogic.gdx.math.Polygon;
@@ -98,25 +99,21 @@ public class AtkSpeedTower extends StatusTower{
 	
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
 		return "Attack Speed Boost Tower";
 	}
 
 	@Override
 	public String getSpritePath() {
-		// TODO Auto-generated method stub
 		return spritePath;
 	}
 
 	@Override
 	public String getIconPath() {
-		// TODO Auto-generated method stub
 		return iconPath;
 	}
 
 	@Override
 	public int getCost() {
-		// TODO Auto-generated method stub
 		return 10;
 	}
 
@@ -150,12 +147,10 @@ public class AtkSpeedTower extends StatusTower{
 
 	@Override
 	public String getDescript() {
-		// TODO Auto-generated method stub
-		return "Increases attack speed by"+this.buffStrengthBase+"%!";
+		return "Increases attack speed by "+this.buffStrengthBase*100+"%!";
 	}
 
 	public float[] getShapeBody() {
-		// TODO Auto-generated method stub
 		return getShapeBody(this.center);
 	}
 
@@ -185,6 +180,12 @@ public class AtkSpeedTower extends StatusTower{
 			retVal[i+1] += mouseY;
 		}
 		return retVal;
+	}
+
+	@Override
+	public TowerType getTowerType() {
+		// TODO Auto-generated method stub
+		return TowerType.ATK_SPEED_TOWER;
 	}
 
 }

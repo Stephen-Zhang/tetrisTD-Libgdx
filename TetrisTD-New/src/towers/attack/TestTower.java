@@ -2,6 +2,7 @@ package towers.attack;
 
 import projectiles.Projectile;
 import projectiles.TestBullet;
+import towers.base.TowerType;
 import util.utilityFunctions;
 
 import com.badlogic.gdx.Input;
@@ -78,7 +79,7 @@ public class TestTower extends AttackTower {
 	}
 	
 	public TestTower(float rotation) {
-		super();
+		this();
 		
 		this.rotation = rotation;
 		shape.setOrigin(16, 16);
@@ -100,7 +101,7 @@ public class TestTower extends AttackTower {
 	}
 	
 	public TestTower(int id, int[] cent, float rotation) {
-		super();
+		this();
 		this.id = id;
 		center = cent;
 		
@@ -239,6 +240,12 @@ public class TestTower extends AttackTower {
 		for (Enemy e : this.target) {
 			bullets.add(new TestBullet(e, this.damage, this.center.clone()));
 		}
+	}
+
+	@Override
+	public TowerType getTowerType() {
+		// TODO Auto-generated method stub
+		return TowerType.TEST_TOWER;
 	}
 
 }

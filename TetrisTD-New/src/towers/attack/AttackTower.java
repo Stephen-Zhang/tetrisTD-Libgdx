@@ -114,7 +114,12 @@ public abstract class AttackTower implements BaseTower{
 		return rotation;
 	}
 
+	public int getDamage() {
+		return this.damage;
+	}
+	
 	public abstract void acquireTargets(DelayedRemovalArray<Enemy> enemies);
 	public abstract void fire(DelayedRemovalArray<Projectile> bullets);
 
+	
 }

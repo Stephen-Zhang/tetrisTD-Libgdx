@@ -220,7 +220,7 @@ public class GameScreen implements Screen {
 					AttackTower atkT = (AttackTower) t;
 					atkT.buffUpdate(this.game.towers);
 					atkT.acquireTargets(this.game.enemies);
-					if(atkT.getCanFire()) {
+					if(atkT.target.size > 0 && atkT.getCanFire()) {
 						atkT.setCooldown(0);
 						atkT.fire(this.game.bullets);
 						atkT.setCanFire(false);

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import towers.attack.AttackTower;
 import towers.attack.TestTower;
 import towers.base.BaseTower;
 import towers.base.TowerType;
@@ -12,9 +13,6 @@ import util.utilityFunctions;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 
 public class GameOverlay {
@@ -42,45 +40,53 @@ public class GameOverlay {
 		drawLivesAndGold();
 		drawSendEarly();
 		drawIcons();
+		drawHovering();
 		
 		this.game.batch.end();
 	}
 	
+	private void drawHovering() {
+		// TODO Auto-generated method stub
+		if (this.hovering != null) {
+			
+			int height = 300;
+			height = utilityFunctions.drawText(game.font, game.batch, this.hovering.getDescript(), 850, height, 150);
+			if (this.hovering.isBuffTower()) {
+				
+			} else {
+				height = utilityFunctions.drawText(game.font, game.batch, "Damage: "+((AttackTower)this.hovering).getDamage(), 850, height, 150);
+				height = utilityFunctions.drawText(game.font, game.batch,  "Fire Speed: Every "+((AttackTower)this.hovering).getFireRate()+" seconds", 850, height, 150);
+			}
+		}
+	}
+
 	private void drawLivesAndGold() {
 		if (game.player.lives > 0) {
-			game.font.draw(game.batch, "Lives: "+game.player.lives, 840, 732);
-			game.font.draw(game.batch, "Gold: "+game.player.gold, 840, 700);
+			int height = 732;
+			height = utilityFunctions.drawText(game.font, game.batch, "Lives: "+game.player.lives, 850, height, 150);
+			height = utilityFunctions.drawText(game.font, game.batch, "Gold: "+game.player.gold, 850, height, 150);
 		} else {
-			List<String> gameOverMsg = utilityFunctions.wrap("Game Over! Unfortunately you have no more lives left.", game.font, 150);
-			Iterator<String> iter = gameOverMsg.iterator();
 			int height = 668;
-			while(iter.hasNext()) {
-				game.font.draw(game.batch, iter.next(), 840, height);
-				height -= game.font.getLineHeight();
-			}
+			utilityFunctions.drawText(game.font, game.batch, "Game Over! Unfortunately you have no more lives left.", 850, height, 150);
 		}
 	}
 	
 	private void drawSendEarly() {
-		//Send Early Message
+		//If player is dead, ignore
+		if (this.game.player.lives <= 0) {
+			return;
+		}
+		//Send Early Message at height of 668
+		int height = 668;
+		String displayStr = "";
 		if (!this.game.getCurrLevel().nextWaveAvail() && this.game.enemies.size == 0) {
 			this.game.getCurrLevel().done = true;
-			List<String> lvlComplete = utilityFunctions.wrap("You finished this level! For now, theres nothing else to do. Congratulations!", game.font, 150);
-			Iterator<String> iter = lvlComplete.iterator();
-			int height = 668;
-			while (iter.hasNext()) {
-				game.font.draw(game.batch, iter.next(), 840, height);
-				height -= game.font.getLineHeight();
-			}
+			displayStr = "You finished this level! For now, theres nothing else to do. Congratulations!";
+			
 		} else if (this.game.getCurrLevel().sendEarly) {
-			List<String> sendEarlyMsg = utilityFunctions.wrap("You finished this wave! You may send the next wave early if you press the key P on the keyboard.", game.font, 150);
-			Iterator<String> iter = sendEarlyMsg.iterator();
-			int height = 668;
-			while (iter.hasNext()) {
-				game.font.draw(game.batch, iter.next(), 840, height);
-				height -= game.font.getLineHeight();
-			}
+			displayStr = "You finished this wave! You may send the next wave early if you press the key P on the keyboard.";
 		}
+		utilityFunctions.drawText(game.font, game.batch, displayStr, 850, height, 150);
 	}
 	
 	private void drawIcons() {
