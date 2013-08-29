@@ -3,6 +3,7 @@ package player;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import towers.attack.TestAoeTower;
 import towers.attack.TestTower;
 import towers.base.BaseTower;
 import towers.base.TowerType;
@@ -53,7 +54,7 @@ public class Player {
 		case NULL: 
 			return null;
 		case TEST_AOE_TOWER:
-			break;
+			return new TestAoeTower(id, this.currMouseLoc, this.holdingRotation);
 		case ATK_SPEED_TOWER:
 			return new AtkSpeedTower(id, this.currMouseLoc, this.holdingRotation);
 		default:
@@ -70,7 +71,7 @@ public class Player {
 		case NULL:
 			return 0;
 		case TEST_AOE_TOWER:
-			break;
+			return new TestAoeTower(this.holdingRotation).getCost();
 		case ATK_SPEED_TOWER:
 			return new AtkSpeedTower(this.holdingRotation).getCost();
 		default:
@@ -87,7 +88,7 @@ public class Player {
 		case NULL:
 			return null;
 		case TEST_AOE_TOWER:
-			break;
+			return new TestAoeTower(this.holdingRotation).getShape(this.currMouseLoc);
 		case ATK_SPEED_TOWER:
 			return new AtkSpeedTower(this.holdingRotation).getShape(this.currMouseLoc);
 		default:
@@ -104,7 +105,7 @@ public class Player {
 		case NULL:
 			return null;
 		case TEST_AOE_TOWER:
-			break;
+			return new TestAoeTower(this.holdingRotation).getShapeBody(this.currMouseLoc);
 		case ATK_SPEED_TOWER:
 			return new AtkSpeedTower(this.holdingRotation).getShapeBody(this.currMouseLoc);
 		default:
@@ -121,7 +122,7 @@ public class Player {
 		case NULL:
 			return null;
 		case TEST_AOE_TOWER:
-			break;
+			return new TestAoeTower(this.holdingRotation).getRange(this.currMouseLoc);
 		case ATK_SPEED_TOWER:
 			return new AtkSpeedTower(this.holdingRotation).getRange(this.currMouseLoc);
 		default:

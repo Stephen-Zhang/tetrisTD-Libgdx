@@ -1,10 +1,9 @@
 package gameScenes;
 
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 
 import towers.attack.AttackTower;
+import towers.attack.TestAoeTower;
 import towers.attack.TestTower;
 import towers.base.BaseTower;
 import towers.base.TowerType;
@@ -28,6 +27,7 @@ public class GameOverlay {
 
 		towerMapping.put(TowerType.ATK_SPEED_TOWER, new AtkSpeedTower());
 		towerMapping.put(TowerType.TEST_TOWER, new TestTower());
+		towerMapping.put(TowerType.TEST_AOE_TOWER, new TestAoeTower());
 		//towerMapping.put(TowerType.NULL, null);
 	}
 	

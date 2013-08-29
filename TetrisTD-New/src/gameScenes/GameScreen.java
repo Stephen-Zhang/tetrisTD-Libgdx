@@ -241,7 +241,7 @@ public class GameScreen implements Screen {
 				p.updateMovement();
 				if (Intersector.overlapConvexPolygons(p.getHitbox(), p.target.getHitbox())) {
 					p.target.setCurrHealth(p.target.getCurrHealth() - p.damage);
-					if (p.target.getCurrHealth() < 0) {
+					if (p.target.getCurrHealth() <= 0) {
 						//Dead
 						for (AttackTower t : p.target.towersAttacking) {
 							t.target.removeValue(p.target, false);

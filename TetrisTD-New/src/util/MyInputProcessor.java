@@ -37,11 +37,15 @@ public class MyInputProcessor implements InputProcessor {
 
 	@Override
 	public boolean keyTyped(char character) {
+		//TODO: Change these to rely on tower.key instead of hardcode.
 		if (character == 't') {
 			game.player.holding = TowerType.TEST_TOWER;
 		}
 		if (character == 'y') {
 			game.player.holding = TowerType.ATK_SPEED_TOWER;
+		}
+		if (character == 'r') {
+			game.player.holding = TowerType.TEST_AOE_TOWER;
 		}
 		if (this.game.getCurrLevel().sendEarly && !this.game.getCurrLevel().done && character == 'p') {
 			this.game.getCurrLevel().getNextWave();
