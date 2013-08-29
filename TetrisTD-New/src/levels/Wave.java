@@ -52,5 +52,5 @@ public class Wave {
 	public void setTextEvent(String textEvent) {
 		this.textEvent = textEvent;
 	}
-	
+
 }

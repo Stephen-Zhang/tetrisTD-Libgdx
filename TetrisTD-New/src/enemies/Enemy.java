@@ -28,7 +28,7 @@ public abstract class Enemy {
 		this.currHealth = currHealth;
 	}
 
-	protected int[] pos = new int[2];
+	protected double[] pos = new double[2];
 	protected double[] dir = new double[2];
 
 	public boolean success = false;
@@ -53,7 +53,7 @@ public abstract class Enemy {
 	}
 
 	public boolean arrivedAtDest() {
-		if (this.pos[0] == this.destination.x && this.pos[1] == this.destination.y) {
+		if ((int)this.pos[0] == this.destination.x && (int)this.pos[1] == this.destination.y) {
 			return true;
 		}
 		return false;
@@ -88,7 +88,7 @@ public abstract class Enemy {
 		return dist;
 	}
 	
-	public int[] getPos() {
+	public double[] getPos() {
 		return pos;
 	}
 	

@@ -6,18 +6,18 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.Array;
 
-public class TestEnemy extends Enemy {
+public class TankEnemy extends Enemy {
 
-	public TestEnemy(double[] startingLoc, Array<Point>waypts) {
-		this.maxHealth = 20;
+	public TankEnemy(double[] startingLoc, Array<Point>waypts) {
+		this.maxHealth = 50;
 		this.currHealth = 20;
 		this.pos = startingLoc;
 		this.bounty = 10;
 		this.waypoints = waypts;
-		this.walkSpeed = 1;
+		this.walkSpeed = .3;
 		getNextDest();
 		
-		this.sprite = new Texture("enemies/TestEnemy.png");
+		this.sprite = new Texture("enemies/TankEnemy.png");
 		
 	}
 
@@ -38,4 +38,5 @@ public class TestEnemy extends Enemy {
 		}
 		return new Polygon(retVal);
 	}
+
 }

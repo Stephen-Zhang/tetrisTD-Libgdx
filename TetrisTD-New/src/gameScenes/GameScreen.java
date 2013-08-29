@@ -130,7 +130,8 @@ public class GameScreen implements Screen {
 
 		//Enemies
 		for (Enemy e : this.game.enemies) {
-			game.batch.draw(e.sprite, e.getPos()[0], e.getPos()[1]);
+			float[] floatPos = utilityFunctions.doubleToFloat(e.getPos());
+			game.batch.draw(e.sprite, floatPos[0], floatPos[1]);
 		}
 		
 		//Towers

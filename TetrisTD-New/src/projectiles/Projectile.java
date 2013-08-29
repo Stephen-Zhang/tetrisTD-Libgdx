@@ -22,7 +22,7 @@ public abstract class Projectile {
 		
 	
 	public void getDirection() {
-		int[] targetLoc = target.getPos();
+		double[] targetLoc = target.getPos();
 		double[] targetCenter = {targetLoc[0]+16, targetLoc[1]+16};
 		//Distance to sprite center. assumed to be 32 atm.
 		double distance = Math.sqrt( Math.pow((targetCenter[0]-pos[0]),2) + Math.pow((targetCenter[1]-pos[1]), 2) );
