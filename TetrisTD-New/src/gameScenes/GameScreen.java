@@ -13,6 +13,7 @@ import towers.base.TowerType;
 import towers.status.StatusTower;
 import util.MyInputProcessor;
 import util.OverlayInputProcessor;
+import util.TextureManager;
 import util.utilityFunctions;
 
 import com.badlogic.gdx.Gdx;
@@ -46,6 +47,7 @@ public class GameScreen implements Screen {
 	String textEvent;
 	
 	OrthographicCamera cam;
+	OrthogonalTiledMapRenderer renderer;
 	
 	InputProcessor gameProcessor;
 	InputProcessor overlayProcessor;
@@ -62,6 +64,7 @@ public class GameScreen implements Screen {
 		this.game.bullets = new DelayedRemovalArray<Projectile>();
 		this.game.field = new Integer[fieldWidth*fieldHeight];
 		this.game.gfxUserInterface = new GameOverlay(this.game);
+		this.game.textureManager = new TextureManager();
 		
 		gameProcessor = new MyInputProcessor(game);
 		overlayProcessor = new OverlayInputProcessor(game);
@@ -76,6 +79,10 @@ public class GameScreen implements Screen {
 		map = this.game.getCurrLevel().getMap();
 		cam = new OrthographicCamera();
 		cam.setToOrtho(false, 32, 24);
+
+		float unitScale = 1 / 32f;
+		renderer = new OrthogonalTiledMapRenderer(map, unitScale);
+		renderer.setView(cam);
 		
 		game.player = new Player(20, 100);
 	}
@@ -83,11 +90,7 @@ public class GameScreen implements Screen {
 	@Override
 	public void render(float delta) {
 		//Update Camera
-		float unitScale = 1 / 32f;
-		OrthogonalTiledMapRenderer renderer = new OrthogonalTiledMapRenderer(map, unitScale);
-		renderer.setView(cam);
 		renderer.render();
-		
 		//Update time trackers
 		if (this.textEvent == "") {
 			totalTime += Gdx.graphics.getDeltaTime()*1000;
@@ -131,12 +134,12 @@ public class GameScreen implements Screen {
 		//Enemies
 		for (Enemy e : this.game.enemies) {
 			float[] floatPos = utilityFunctions.doubleToFloat(e.getPos());
-			game.batch.draw(e.sprite, floatPos[0], floatPos[1]);
+			
+			game.batch.draw(game.textureManager.getTextureFromMap(e.getName().toString()), floatPos[0], floatPos[1]);
 		}
 		
 		//Towers
 		for (BaseTower t : this.game.towers) {
-			//game.batch.draw(new Texture(t.getSpritePath()), t.getCenter()[0], t.getCenter()[1]);
 			game.batch.draw(new TextureRegion(new Texture(t.getSpritePath())), t.getCenter()[0], t.getCenter()[1], 16, 16, 96, 96, 1, 1, t.getRotation());
 		}
 		

@@ -4,12 +4,12 @@ import levels.Level;
 import player.Player;
 import projectiles.Projectile;
 import towers.base.BaseTower;
+import util.TextureManager;
 import util.utilityFunctions;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
 
@@ -26,6 +26,7 @@ public class tetrisTD extends Game {
 	protected Integer[] field;
 	private Level currLevel;
 	protected GameOverlay gfxUserInterface;
+	protected TextureManager textureManager;
 
 	public Level getCurrLevel() {
 		return currLevel;
@@ -83,6 +84,13 @@ public class tetrisTD extends Game {
 		this.gfxUserInterface = gfxUserInterface;
 	}
 
+	public TextureManager getTextureManager() {
+		return textureManager;
+	}
+
+	public void setTextureManager(TextureManager textureManager) {
+		this.textureManager = textureManager;
+	}
 
 	@Override
 	public void create() {

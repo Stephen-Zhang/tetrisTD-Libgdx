@@ -8,6 +8,12 @@ import com.badlogic.gdx.utils.Array;
 
 public class TestEnemy extends Enemy {
 
+	private String spritePath = "enemies/TestEnemy.png";
+	
+	public TestEnemy() {
+		
+	}
+	
 	public TestEnemy(double[] startingLoc, Array<Point>waypts) {
 		this.maxHealth = 20;
 		this.currHealth = 20;
@@ -16,9 +22,7 @@ public class TestEnemy extends Enemy {
 		this.waypoints = waypts;
 		this.walkSpeed = 1;
 		getNextDest();
-		
-		this.sprite = new Texture("enemies/TestEnemy.png");
-		
+		this.name = "TestEnemy";
 	}
 
 	@Override
@@ -37,5 +41,17 @@ public class TestEnemy extends Enemy {
 			}
 		}
 		return new Polygon(retVal);
+	}
+
+	@Override
+	public String getSpritePath() {
+		// TODO Auto-generated method stub
+		return this.spritePath;
+	}
+
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return this.name;
 	}
 }

@@ -33,4 +33,5 @@ public interface BaseTower {
 	public void getTowersInRange(Array<BaseTower> array);
 	
 	public TowerType getTowerType();
+
 }

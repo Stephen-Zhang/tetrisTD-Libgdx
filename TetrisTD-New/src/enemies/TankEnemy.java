@@ -8,6 +8,12 @@ import com.badlogic.gdx.utils.Array;
 
 public class TankEnemy extends Enemy {
 
+	private String spritePath = "enemies/TankEnemy.png";
+	
+	public TankEnemy() {
+		
+	}
+	
 	public TankEnemy(double[] startingLoc, Array<Point>waypts) {
 		this.maxHealth = 50;
 		this.currHealth = 20;
@@ -16,8 +22,7 @@ public class TankEnemy extends Enemy {
 		this.waypoints = waypts;
 		this.walkSpeed = .3;
 		getNextDest();
-		
-		this.sprite = new Texture("enemies/TankEnemy.png");
+		this.name = "TankEnemy";
 		
 	}
 
@@ -37,6 +42,18 @@ public class TankEnemy extends Enemy {
 			}
 		}
 		return new Polygon(retVal);
+	}
+
+	@Override
+	public String getSpritePath() {
+		// TODO Auto-generated method stub
+		return this.spritePath;
+	}
+
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return this.name;
 	}
 
 }

@@ -12,6 +12,8 @@ import com.badlogic.gdx.utils.DelayedRemovalArray;
 public abstract class Enemy {
 	protected double maxHealth;
 	protected double currHealth;
+	protected String name;
+	
 	public double getMaxHealth() {
 		return maxHealth;
 	}
@@ -36,7 +38,6 @@ public abstract class Enemy {
 	public Array<Point> waypoints;
 	protected Point destination;
 	protected double walkSpeed = 1;
-	public Texture sprite;
 
 	public DelayedRemovalArray<AttackTower> towersAttacking = new DelayedRemovalArray<AttackTower>();
 	public boolean alive = true;
@@ -99,5 +100,10 @@ public abstract class Enemy {
 		pos[1] += dir[1]*walkSpeed;
 	}
 
-	public abstract Polygon getHitbox();	
+	public abstract Polygon getHitbox();
+	
+	public abstract String getSpritePath();
+	
+	public abstract String getName();
+
 }
