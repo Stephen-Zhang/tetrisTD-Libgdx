@@ -140,7 +140,7 @@ public class GameScreen implements Screen {
 		
 		//Towers
 		for (BaseTower t : this.game.towers) {
-			game.batch.draw(new TextureRegion(new Texture(t.getSpritePath())), t.getCenter()[0], t.getCenter()[1], 16, 16, 96, 96, 1, 1, t.getRotation());
+			game.batch.draw(new TextureRegion(game.getTextureManager().getTextureFromMap(t.getName()+" Sprite")), t.getCenter()[0], t.getCenter()[1], 16, 16, 96, 96, 1, 1, t.getRotation());
 		}
 		
 		//Bullets
@@ -152,7 +152,7 @@ public class GameScreen implements Screen {
 		if (textEvent != "") {
 			Gdx.input.setInputProcessor(overlayProcessor);
 			
-			Sprite overlay = new Sprite(new Texture("util/overlay.png"), 1024, 768);
+			Sprite overlay = new Sprite(game.getTextureManager().getTextureFromMap("Overlay"), 1024, 768);
 			overlay.draw(this.game.batch);
 			List<String> textEventList = utilityFunctions.wrap(textEvent, game.font, 200);
 			Iterator<String> iter = textEventList.iterator();

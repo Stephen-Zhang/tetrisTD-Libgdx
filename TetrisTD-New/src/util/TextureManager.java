@@ -16,20 +16,21 @@ public class TextureManager {
 	
 	public TextureManager() {
 		//Towers
-		textureMap.put("TestTower_Sprite", new Texture((new TestTower().getSpritePath())));
-		textureMap.put("TestTower_Icon", new Texture((new TestTower().getIconPath())));
-		textureMap.put("AtkSpeedTower_Sprite", new Texture((new AtkSpeedTower().getSpritePath())));
-		textureMap.put("AtkSpeedTower_Icon", new Texture((new AtkSpeedTower().getIconPath())));
-		textureMap.put("TestAoeTower_Sprite", new Texture((new TestAoeTower().getSpritePath())));
-		textureMap.put("TestAoeTower_Icon", new Texture((new TestAoeTower().getIconPath())));
+		textureMap.put("Test Tower Sprite", new Texture((new TestTower().getSpritePath())));
+		textureMap.put("Test Tower Icon", new Texture((new TestTower().getIconPath())));
+		textureMap.put("Attack Speed Tower Sprite", new Texture((new AtkSpeedTower().getSpritePath())));
+		textureMap.put("Attack Speed Tower Icon", new Texture((new AtkSpeedTower().getIconPath())));
+		textureMap.put("Test Aoe Tower Sprite", new Texture((new TestAoeTower().getSpritePath())));
+		textureMap.put("Test Aoe Tower Icon", new Texture((new TestAoeTower().getIconPath())));
 		
 		//Enemies
 		textureMap.put("TestEnemy", new Texture((new TestEnemy().getSpritePath())));
 		textureMap.put("TankEnemy", new Texture((new TankEnemy().getSpritePath())));
-
 		
 		//Bullets
-		
+
+		//Overlay
+		textureMap.put("Overlay", new Texture("util/overlay.png"));
 	}
 	
 	public Texture getTextureFromMap(String key) {

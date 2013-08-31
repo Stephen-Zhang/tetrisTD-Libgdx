@@ -127,7 +127,7 @@ public int key = Input.Keys.R;
 
 	}
 	
-	private String name = "Test AoE Tower";
+	private String name = "Test Aoe Tower";
 	private int gold = 10;
 	private String description = "This tower attacks all nearby enemies!";
 	

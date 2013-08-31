@@ -17,7 +17,7 @@ public class AtkSpeedTower extends StatusTower{
 		32, 96,
 		0, 96
 	});
-	
+		
 	private Polygon range = new Polygon(new float[] {
 		-32, -32,
 		64, -32,
@@ -58,6 +58,8 @@ public class AtkSpeedTower extends StatusTower{
 	}
 
 	public AtkSpeedTower(float rotation) {
+		
+		
 		this.rotation = rotation;
 		
 		shape.setOrigin(16, 16);
@@ -99,7 +101,7 @@ public class AtkSpeedTower extends StatusTower{
 	
 	@Override
 	public String getName() {
-		return "Attack Speed Boost Tower";
+		return this.name;
 	}
 
 	@Override
@@ -114,7 +116,7 @@ public class AtkSpeedTower extends StatusTower{
 
 	@Override
 	public int getCost() {
-		return 10;
+		return this.gold;
 	}
 
 	@Override

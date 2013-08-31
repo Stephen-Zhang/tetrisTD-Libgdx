@@ -96,10 +96,10 @@ public class GameOverlay {
 		for (TowerType t : towerMapping.keySet()) {
 			BaseTower tempTower = towerMapping.get(t);
 			Rectangle iconBox = new Rectangle(x, y, 32, 32);
-
+			
 			iconToTower.put(iconBox, tempTower);
 			
-			game.batch.draw(new Texture(tempTower.getIconPath()), x, y);
+			game.batch.draw(this.game.getTextureManager().getTextureFromMap(tempTower.getName() + " Icon"), x, y);
 			
 			x += 50;
 			if (x >= xLimit) {
