@@ -2,9 +2,11 @@ package towers.attack;
 
 import projectiles.Projectile;
 import towers.base.BaseTower;
+import towers.base.TowerType;
 import towers.status.AtkSpeedTower;
 import util.StatusType;
 
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -14,12 +16,18 @@ import enemies.Enemy;
 
 public abstract class AttackTower implements BaseTower{
 	protected int id;
+	
+	protected int key;
+	
+	protected TowerType towerType;
+	
 	/**
 	 * Attack timing variables:
 	 * fireRate value : seconds
 	 * cooldown value : seconds
 	 * canFire  value : boolean
 	 */
+
 	protected float rotation = 0;
 	protected double fireRate = 1;
 	protected int damage = 10;
@@ -27,11 +35,24 @@ public abstract class AttackTower implements BaseTower{
 	protected double cooldown = 0;
 	
 	protected int[] center = new int[2];
-	protected int[] gridLocation = null;//Temporary placeholder while i fill it
+	protected int[] gridLocation = null;
 
 	protected int[] iconLoc = new int[2];
 	
 	protected double atkSpeedBonus = 0.0;
+	
+	protected Polygon shape;
+	protected Polygon range;
+	protected float[] shapeBody;
+	protected float[] rangeBody;
+	protected float[] offset;
+	
+	protected String name; 
+	protected int cost;
+	protected String description;
+	
+	protected String iconPath;
+	protected String spritePath;
 	
 	public DelayedRemovalArray<Enemy> target = new DelayedRemovalArray<Enemy>();
 	private ObjectMap<StatusType, ObjectSet<Integer>> buffs = new ObjectMap<StatusType, ObjectSet<Integer>>();
@@ -118,8 +139,97 @@ public abstract class AttackTower implements BaseTower{
 		return this.damage;
 	}
 	
+	public String getName() {
+		return name;
+	}
+
+	public String getSpritePath() {
+		return spritePath;
+	}
+
+	public String getIconPath() {
+		return iconPath;
+	}
+
+	public int getCost() {
+		return cost;
+	}
+	
+	public float[] getShapeBody() {
+		return getShapeBody(this.center);
+	}
+
+	/**
+	 * Takes in mouse location and returns adjusted grid coordinates of shape body
+	 * @param mouseLoc
+	 * @return
+	 */
+	public float[] getShapeBody(int[] mouseLoc) {
+		//normalize mouse location into grid coordinates here
+		int mouseX = mouseLoc[0]/32;
+		int mouseY = mouseLoc[1]/32;
+		float[] retVal = shapeBody.clone();
+		for (int i = 0; i < retVal.length; i += 2) {
+			retVal[i] += mouseX;
+			retVal[i+1] += mouseY;
+		}
+		return retVal;
+	}
+	
+	public float[] getRangeBody() {
+		return getRangeBody(this.center);
+	}
+
+	public float[] getRangeBody(int[] mouseLoc) {
+		//normalize mouse location into grid coordinates here
+		int mouseX = mouseLoc[0]/32;
+		int mouseY = mouseLoc[1]/32;
+		float[] retVal = rangeBody.clone();
+		for (int i = 0; i < retVal.length; i += 2) {
+			retVal[i] += mouseX;
+			retVal[i+1] += mouseY;
+		}
+		return retVal;
+	}
+	
+	@Override
+	public float[] getShape(int[] mouseLoc) {
+		float[] retVal = shape.getTransformedVertices().clone();
+		for (int i = 0; i < retVal.length; i++ ) {
+			if (i % 2 == 0) {
+				//Even and 0
+				retVal[i] += offset[i] + mouseLoc[0];
+			} else {
+				retVal[i] += offset[i] + mouseLoc[1];
+			}
+		}
+		return retVal;
+	}
+
+	@Override
+	public float[] getRange(int[] mouseLoc) {
+		float[] retVal = range.getTransformedVertices().clone();
+		for (int i = 0; i < retVal.length; i++ ) {
+			if (i % 2 == 0) {
+				//Even and 0
+				retVal[i] += offset[i] + mouseLoc[0];
+			} else {
+				retVal[i] += offset[i] + mouseLoc[1];
+			}
+		}
+		return retVal;
+	}
+
+	public String getDescript() {
+		return description;
+	}
+	
+	public TowerType getTowerType() {
+		// TODO Auto-generated method stub
+		return this.towerType;
+	}
+	
 	public abstract void acquireTargets(DelayedRemovalArray<Enemy> enemies);
 	public abstract void fire(DelayedRemovalArray<Projectile> bullets);
-
 	
 }

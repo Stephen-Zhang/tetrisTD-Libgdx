@@ -3,8 +3,8 @@ package enemies;
 import java.awt.Point;
 
 import towers.attack.AttackTower;
+import util.StatusType;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
@@ -13,6 +13,9 @@ public abstract class Enemy {
 	protected double maxHealth;
 	protected double currHealth;
 	protected String name;
+	protected double slowFactor;
+	protected Array<StatusType> debuffs = new Array<StatusType>();
+	protected String spritePath;
 	
 	public double getMaxHealth() {
 		return maxHealth;
@@ -99,11 +102,34 @@ public abstract class Enemy {
 		pos[0] += dir[0]*walkSpeed;
 		pos[1] += dir[1]*walkSpeed;
 	}
+	
+	public double getSpeed() {
+		return this.walkSpeed * this.slowFactor;
+	}
 
-	public abstract Polygon getHitbox();
+	public Polygon getHitbox() {
+		float[] retVal = new float[]{
+			0, 0,
+			0, 32,
+			32, 32,
+			32, 0
+		};
+		for (int i = 0; i < retVal.length; i++) {
+			if (i % 2 == 0) {
+				retVal[i] += pos[0];
+			} else {
+				retVal[i] += pos[1];
+			}
+		}
+		return new Polygon(retVal);
+	}
 	
-	public abstract String getSpritePath();
+	public String getSpritePath() {
+		return this.spritePath;
+	}
 	
-	public abstract String getName();
+	public String getName() {
+		return this.name;
+	}
 
 }

@@ -39,10 +39,10 @@ public class LevelOne extends Level {
 		tOne.add(new Integer(0));
 		tOne.add(new Integer(500));
 		tOne.add(new Integer(1000));
-		tOne.add(new Integer(1200));
-		tOne.add(new Integer(1400));
-		tOne.add(new Integer(1600));
+		tOne.add(new Integer(1500));
 		tOne.add(new Integer(2000));
+		tOne.add(new Integer(2500));
+		tOne.add(new Integer(3000));
 
 		Array<Enemy> wTwoEnemies = new Array<Enemy>();
 		wTwoEnemies.add(new TestEnemy(startingLoc.clone(), new Array<Point>(waypts)));
