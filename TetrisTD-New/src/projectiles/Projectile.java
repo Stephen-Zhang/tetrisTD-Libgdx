@@ -1,5 +1,7 @@
 package projectiles;
 
+import util.DebuffStatusType;
+
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Polygon;
 
@@ -11,7 +13,11 @@ public abstract class Projectile {
 	public int[]pos = new int[2];
 	public double[] dir = new double[2];
 	public int damage;
-	public Texture sprite;
+	public String sprite;
+	public String name;
+	protected DebuffStatusType debuff = DebuffStatusType.NONE;
+	protected double debuffDuration;
+	
 	public float[] hitboxVertices = new float[]{
 			0,0,
 			0,8,
@@ -47,5 +53,21 @@ public abstract class Projectile {
 		getDirection();
 		pos[0] += dir[0]*speed;
 		pos[1] += dir[1]*speed;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public DebuffStatusType getDebuff() {
+		return debuff;
+	}
+	
+	public double getDebuffDuration() {
+		return debuffDuration;
+	}
+	
+	public boolean hasDebuff() {
+		return debuff != DebuffStatusType.NONE;
 	}
 }

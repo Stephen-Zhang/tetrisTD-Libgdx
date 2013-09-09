@@ -4,7 +4,7 @@ import projectiles.Projectile;
 import towers.base.BaseTower;
 import towers.base.TowerType;
 import towers.status.AtkSpeedTower;
-import util.StatusType;
+import util.TowerStatusType;
 
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.Array;
@@ -55,7 +55,7 @@ public abstract class AttackTower implements BaseTower{
 	protected String spritePath;
 	
 	public DelayedRemovalArray<Enemy> target = new DelayedRemovalArray<Enemy>();
-	private ObjectMap<StatusType, ObjectSet<Integer>> buffs = new ObjectMap<StatusType, ObjectSet<Integer>>();
+	private ObjectMap<TowerStatusType, ObjectSet<Integer>> buffs = new ObjectMap<TowerStatusType, ObjectSet<Integer>>();
 	
 	public int[] getCenter() {
 		return center;
@@ -89,9 +89,9 @@ public abstract class AttackTower implements BaseTower{
 		this.gridLocation = gridLocation;
 	}
 
-	public void setBuffs(ObjectSet<StatusType> newBuffs, int towerId) {
+	public void setBuffs(ObjectSet<TowerStatusType> newBuffs, int towerId) {
 		//For each key, add in tower IDs
-		for (StatusType key: newBuffs) {
+		for (TowerStatusType key: newBuffs) {
 			ObjectSet<Integer> towerIds;
 			if (this.buffs.containsKey(key)) {
 				towerIds = this.buffs.get(key);
@@ -104,7 +104,7 @@ public abstract class AttackTower implements BaseTower{
 	}
 
 	public void buffUpdate(Array<BaseTower> towers) {
-		for (StatusType key: this.buffs.keys()) {
+		for (TowerStatusType key: this.buffs.keys()) {
 			ObjectSet<Integer> towerIds = this.buffs.get(key);
 			switch(key) {
 			case INCREASE_ATK_SPEED:

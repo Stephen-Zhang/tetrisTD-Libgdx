@@ -145,7 +145,7 @@ public class GameScreen implements Screen {
 		
 		//Bullets
 		for (Projectile p : this.game.bullets) {
-			game.batch.draw(p.sprite, p.pos[0], p.pos[1]);
+			game.batch.draw(game.textureManager.getTextureFromMap(p.getName()), p.pos[0], p.pos[1]);
 		}
 
 		//Draw Overlay for text events
@@ -203,6 +203,7 @@ public class GameScreen implements Screen {
 			}
 			
 			for (Enemy e: this.game.enemies) {
+				e.updateDebuffs(delta);
 				if ( e.arrivedAtDest() && e.nextDestExists() ) {
 					e.getNextDest();
 				}
@@ -245,6 +246,9 @@ public class GameScreen implements Screen {
 				p.updateMovement();
 				if (Intersector.overlapConvexPolygons(p.getHitbox(), p.target.getHitbox())) {
 					p.target.setCurrHealth(p.target.getCurrHealth() - p.damage);
+					if (p.hasDebuff()) {
+						p.target.addDebuff(p.getDebuff(), p.getDebuffDuration());
+					}
 					if (p.target.getCurrHealth() <= 0) {
 						//Dead
 						for (AttackTower t : p.target.towersAttacking) {

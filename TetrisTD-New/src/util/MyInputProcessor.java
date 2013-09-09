@@ -1,15 +1,13 @@
 package util;
 
 import gameScenes.tetrisTD;
-
-import java.util.HashMap;
-
 import towers.base.BaseTower;
 import towers.base.TowerType;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.OrderedMap;
 
 public class MyInputProcessor implements InputProcessor {
 
@@ -46,6 +44,9 @@ public class MyInputProcessor implements InputProcessor {
 		}
 		if (character == 'r') {
 			game.player.holding = TowerType.TEST_AOE_TOWER;
+		}
+		if (character == 'u') {
+			game.player.holding = TowerType.SLOW_TOWER;
 		}
 		if (this.game.getCurrLevel().sendEarly && !this.game.getCurrLevel().done && character == 'p') {
 			this.game.getCurrLevel().getNextWave();
@@ -105,8 +106,8 @@ public class MyInputProcessor implements InputProcessor {
 
 			//Hover over an icon...
 			BaseTower hovering = null;
-			HashMap<Rectangle, BaseTower> iconSetMap = this.game.getGfxUserInterface().getIconToTower();
-			for (Rectangle rect : iconSetMap.keySet()) {
+			OrderedMap<Rectangle, BaseTower> iconSetMap = this.game.getGfxUserInterface().getIconToTower();
+			for (Rectangle rect : iconSetMap.keys()) {
 				if (rect.contains(unroundedMouse[0], unroundedMouse[1])) {
 					//Hovering over a mouse, set hovering to that tower
 					hovering = iconSetMap.get(rect);

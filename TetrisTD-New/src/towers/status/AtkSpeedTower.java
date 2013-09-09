@@ -2,7 +2,7 @@ package towers.status;
 
 import projectiles.Projectile;
 import towers.base.TowerType;
-import util.StatusType;
+import util.TowerStatusType;
 
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
@@ -57,7 +57,7 @@ public class AtkSpeedTower extends StatusTower{
 
 		towerType = towerType.ATK_SPEED_TOWER;
 		
-		this.buffs.add(StatusType.INCREASE_ATK_SPEED);
+		this.buffs.add(TowerStatusType.INCREASE_ATK_SPEED);
 		this.buffStrengthBase = .50; //50% atkSpeed
 		
 	}

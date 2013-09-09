@@ -1,9 +1,10 @@
 package enemies;
 
 import java.awt.Point;
+import java.util.HashMap;
 
 import towers.attack.AttackTower;
-import util.StatusType;
+import util.DebuffStatusType;
 
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.Array;
@@ -14,7 +15,7 @@ public abstract class Enemy {
 	protected double currHealth;
 	protected String name;
 	protected double slowFactor;
-	protected Array<StatusType> debuffs = new Array<StatusType>();
+	protected HashMap<DebuffStatusType, Float> debuffs = new HashMap<DebuffStatusType, Float>();
 	protected String spritePath;
 	
 	public double getMaxHealth() {
@@ -99,12 +100,12 @@ public abstract class Enemy {
 	public void updateMovement(float delta) {
 		// TODO Auto-generated method stub
 		adjustDirection();
-		pos[0] += dir[0]*walkSpeed;
-		pos[1] += dir[1]*walkSpeed;
+		pos[0] += dir[0]*getSpeed();
+		pos[1] += dir[1]*getSpeed();
 	}
 	
 	public double getSpeed() {
-		return this.walkSpeed * this.slowFactor;
+		return this.walkSpeed - this.walkSpeed * this.slowFactor;
 	}
 
 	public Polygon getHitbox() {
@@ -132,4 +133,32 @@ public abstract class Enemy {
 		return this.name;
 	}
 
+	public void updateDebuffs(float delta) {
+		for (DebuffStatusType debuff : debuffs.keySet()) {
+			float newTime = debuffs.get(debuff).floatValue() - delta;
+			if (newTime > 0) {
+				debuffs.put(debuff, newTime);
+				switch(debuff) {
+				case BURN:
+					this.currHealth -= .3*delta;
+					break;
+				case SLOW:
+					this.slowFactor = .3;
+					break;
+				case STUN:
+					this.slowFactor = 1;
+					break;
+				default:
+					break;
+				}
+			} else {
+				this.slowFactor = 0;
+				debuffs.put(debuff, new Float(0));
+			}
+		}
+	}
+	
+	public void addDebuff(DebuffStatusType debuff, double duration) {
+		debuffs.put(debuff, new Float(duration));
+	}
 }

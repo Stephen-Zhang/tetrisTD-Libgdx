@@ -1,8 +1,7 @@
 package gameScenes;
 
-import java.util.HashMap;
-
 import towers.attack.AttackTower;
+import towers.attack.SlowTower;
 import towers.attack.TestAoeTower;
 import towers.attack.TestTower;
 import towers.base.BaseTower;
@@ -11,14 +10,14 @@ import towers.status.AtkSpeedTower;
 import util.utilityFunctions;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.OrderedMap;
 
 public class GameOverlay {
 	private final tetrisTD game;
 
-	private HashMap<TowerType, BaseTower> towerMapping = new HashMap<TowerType, BaseTower>();
-	private HashMap<Rectangle, BaseTower> iconToTower = new HashMap<Rectangle, BaseTower>();
+	private OrderedMap<TowerType, BaseTower> towerMapping = new OrderedMap<TowerType, BaseTower>();
+	private OrderedMap<Rectangle, BaseTower> iconToTower = new OrderedMap<Rectangle, BaseTower>();
 	
 	private BaseTower hovering = null;
 	
@@ -28,7 +27,7 @@ public class GameOverlay {
 		towerMapping.put(TowerType.ATK_SPEED_TOWER, new AtkSpeedTower());
 		towerMapping.put(TowerType.TEST_TOWER, new TestTower());
 		towerMapping.put(TowerType.TEST_AOE_TOWER, new TestAoeTower());
-		//towerMapping.put(TowerType.NULL, null);
+		towerMapping.put(TowerType.SLOW_TOWER, new SlowTower());
 	}
 	
 	public void drawOverlay() {
@@ -93,7 +92,7 @@ public class GameOverlay {
 		int x = 850;
 		int xLimit = 1000;
 		int y = 500;
-		for (TowerType t : towerMapping.keySet()) {
+		for (TowerType t : towerMapping.keys()) {
 			BaseTower tempTower = towerMapping.get(t);
 			Rectangle iconBox = new Rectangle(x, y, 32, 32);
 			
@@ -103,25 +102,25 @@ public class GameOverlay {
 			
 			x += 50;
 			if (x >= xLimit) {
-				x = 800;
-				y += 50;
+				x = 850;
+				y -= 50;
 			}
 		}
 	}
 
-	public HashMap<TowerType, BaseTower> getTowerMapping() {
+	public OrderedMap<TowerType, BaseTower> getTowerMapping() {
 		return towerMapping;
 	}
 
-	public void setTowerMapping(HashMap<TowerType, BaseTower> towerMapping) {
+	public void setTowerMapping(OrderedMap<TowerType, BaseTower> towerMapping) {
 		this.towerMapping = towerMapping;
 	}
 
-	public HashMap<Rectangle, BaseTower> getIconToTower() {
+	public OrderedMap<Rectangle, BaseTower> getIconToTower() {
 		return iconToTower;
 	}
 
-	public void setIconToTower(HashMap<Rectangle, BaseTower> iconToTower) {
+	public void setIconToTower(OrderedMap<Rectangle, BaseTower> iconToTower) {
 		this.iconToTower = iconToTower;
 	}
 

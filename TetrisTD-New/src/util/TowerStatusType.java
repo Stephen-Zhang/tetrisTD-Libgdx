@@ -1,5 +1,5 @@
 package util;
 
-public enum StatusType {
+public enum TowerStatusType {
 	INCREASE_ATK_SPEED,
 }

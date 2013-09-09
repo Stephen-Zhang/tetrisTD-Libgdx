@@ -5,7 +5,7 @@ import java.util.HashSet;
 import towers.attack.AttackTower;
 import towers.base.BaseTower;
 import towers.base.TowerType;
-import util.StatusType;
+import util.TowerStatusType;
 import util.utilityFunctions;
 
 import com.badlogic.gdx.math.Polygon;
@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.ObjectSet;
 
 public abstract class StatusTower implements BaseTower {
 	protected int id;
-	protected ObjectSet<StatusType> buffs = new ObjectSet<StatusType>();
+	protected ObjectSet<TowerStatusType> buffs = new ObjectSet<TowerStatusType>();
 	protected int key;
 	protected TowerType towerType;
 

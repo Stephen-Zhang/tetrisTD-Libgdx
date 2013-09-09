@@ -3,6 +3,7 @@ package player;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import towers.attack.SlowTower;
 import towers.attack.TestAoeTower;
 import towers.attack.TestTower;
 import towers.base.BaseTower;
@@ -25,17 +26,15 @@ public class Player {
 	
 	public ArrayList<TowerType> availTowers = new ArrayList<TowerType>();
 
-	public HashMap<float[], Polygon> threeSqShapes = new HashMap<float[], Polygon>();
 	public HashMap<float[], Polygon> fourSqShapes = new HashMap<float[], Polygon>();
-	public HashMap<float[], Polygon> fiveSqShapes = new HashMap<float[], Polygon>();
+	public HashMap<float[], Polygon[]> fiveSqShapes = new HashMap<float[], Polygon[]>();
 	
 	public int[] currMouseLoc = new int[2];
 	public boolean canPlaceTower = true;
 
 	public Player(int life) {
 		lives = life;
-		
-		populateThrees();
+
 		populateFours();
 		populateFives();
 	}
@@ -74,6 +73,8 @@ public class Player {
 			return new TestAoeTower(id, this.currMouseLoc, this.holdingRotation);
 		case ATK_SPEED_TOWER:
 			return new AtkSpeedTower(id, this.currMouseLoc, this.holdingRotation);
+		case SLOW_TOWER:
+			return new SlowTower(id, this.currMouseLoc, this.holdingRotation);
 		default:
 			break;
 		}
@@ -91,6 +92,8 @@ public class Player {
 			return new TestAoeTower(this.holdingRotation).getCost();
 		case ATK_SPEED_TOWER:
 			return new AtkSpeedTower(this.holdingRotation).getCost();
+		case SLOW_TOWER:
+			return new SlowTower(this.holdingRotation).getCost();
 		default:
 			break;
 		}
@@ -108,6 +111,8 @@ public class Player {
 			return new TestAoeTower(this.holdingRotation).getShape(this.currMouseLoc);
 		case ATK_SPEED_TOWER:
 			return new AtkSpeedTower(this.holdingRotation).getShape(this.currMouseLoc);
+		case SLOW_TOWER:
+			return new SlowTower(this.holdingRotation).getShape(this.currMouseLoc);
 		default:
 			break;
 		}
@@ -125,6 +130,8 @@ public class Player {
 			return new TestAoeTower(this.holdingRotation).getShapeBody(this.currMouseLoc);
 		case ATK_SPEED_TOWER:
 			return new AtkSpeedTower(this.holdingRotation).getShapeBody(this.currMouseLoc);
+		case SLOW_TOWER:
+			return new SlowTower(this.holdingRotation).getShapeBody(this.currMouseLoc);
 		default:
 			break;
 		}
@@ -142,43 +149,12 @@ public class Player {
 			return new TestAoeTower(this.holdingRotation).getRange(this.currMouseLoc);
 		case ATK_SPEED_TOWER:
 			return new AtkSpeedTower(this.holdingRotation).getRange(this.currMouseLoc);
+		case SLOW_TOWER:
+			return new SlowTower(this.holdingRotation).getRange(this.currMouseLoc);
 		default:
 			break;
 		}
 		return null;
-	}
-	
-	public void populateThrees() {
-		//Straight
-		float[] straightBody = new float[]{
-			0, 0,
-			0, 1,
-			0, 2
-		};
-		Polygon straight = new Polygon(new float[]{
-			0, 0,
-			32, 0,
-			32, 96,
-			0, 96
-		});
-		
-		//Bent
-		float[] bentBody = new float[]{
-			0, 0,
-			1, 0,
-			0, 1
-		};		
-		Polygon bent = new Polygon(new float[]{
-				0, 0, 
-				64, 0,
-				64, 64,
-				32, 64,
-				32, 32,
-				0, 32,
-		});
-		
-		threeSqShapes.put(straightBody, straight);
-		threeSqShapes.put(bentBody, bent);
 	}
 	
 	public void populateFours() {
@@ -306,6 +282,7 @@ public class Player {
 	}
 	
 	public void populateFives() {
-		
+			//U shape
+			
 	}
 }
