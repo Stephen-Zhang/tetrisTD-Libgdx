@@ -15,7 +15,7 @@ public abstract class Enemy {
 	protected double currHealth;
 	protected String name;
 	protected double slowFactor;
-	protected HashMap<DebuffStatusType, Float> debuffs = new HashMap<DebuffStatusType, Float>();
+	protected DelayedRemovalArray<Debuff> debuffs = new DelayedRemovalArray<Debuff>();
 	protected String spritePath;
 	
 	public double getMaxHealth() {
@@ -134,16 +134,19 @@ public abstract class Enemy {
 	}
 
 	public void updateDebuffs(float delta) {
-		for (DebuffStatusType debuff : debuffs.keySet()) {
-			float newTime = debuffs.get(debuff).floatValue() - delta;
-			if (newTime > 0) {
-				debuffs.put(debuff, newTime);
-				switch(debuff) {
+		for (Debuff debuff : debuffs) {
+			System.out.println(debuff.getDebuff());
+			debuff.updateDuration(delta);
+			if (debuff.duration <= 0) {
+				debuffs.removeValue(debuff, false);
+				this.slowFactor = 0;
+			} else {
+				switch(debuff.getDebuff()) {
 				case BURN:
-					this.currHealth -= .3*delta;
+					this.currHealth -= debuff.getStrength()*delta;
 					break;
 				case SLOW:
-					this.slowFactor = .3;
+					this.slowFactor = debuff.getStrength();
 					break;
 				case STUN:
 					this.slowFactor = 1;
@@ -151,14 +154,11 @@ public abstract class Enemy {
 				default:
 					break;
 				}
-			} else {
-				this.slowFactor = 0;
-				debuffs.put(debuff, new Float(0));
 			}
 		}
 	}
 	
-	public void addDebuff(DebuffStatusType debuff, double duration) {
-		debuffs.put(debuff, new Float(duration));
+	public void addDebuff(Debuff debuff) {
+		debuffs.add(debuff);
 	}
 }

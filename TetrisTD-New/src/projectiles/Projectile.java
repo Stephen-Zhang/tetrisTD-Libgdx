@@ -2,9 +2,9 @@ package projectiles;
 
 import util.DebuffStatusType;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Polygon;
 
+import enemies.Debuff;
 import enemies.Enemy;
 
 public abstract class Projectile {
@@ -15,8 +15,7 @@ public abstract class Projectile {
 	public int damage;
 	public String sprite;
 	public String name;
-	protected DebuffStatusType debuff = DebuffStatusType.NONE;
-	protected double debuffDuration;
+	protected Debuff debuff;
 	
 	public float[] hitboxVertices = new float[]{
 			0,0,
@@ -59,15 +58,11 @@ public abstract class Projectile {
 		return name;
 	}
 	
-	public DebuffStatusType getDebuff() {
+	public Debuff getDebuff() {
 		return debuff;
 	}
-	
-	public double getDebuffDuration() {
-		return debuffDuration;
-	}
-	
+
 	public boolean hasDebuff() {
-		return debuff != DebuffStatusType.NONE;
+		return debuff.getDebuff() == DebuffStatusType.NONE;
 	}
 }

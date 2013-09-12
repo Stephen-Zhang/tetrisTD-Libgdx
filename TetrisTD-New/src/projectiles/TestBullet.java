@@ -1,18 +1,14 @@
 package projectiles;
 
-import util.DebuffStatusType;
-
-import com.badlogic.gdx.graphics.Texture;
-
 import enemies.Enemy;
+import enemies.NoDebuff;
 
 public class TestBullet extends Projectile {
 	public TestBullet() {
 		this.speed = 10;
 		this.sprite = "bullets/testBullet.png";
 		this.name = "Test Bullet";
-		this.debuff = DebuffStatusType.STUN;
-		this.debuffDuration = .3;
+		this.debuff= new NoDebuff();
 	}
 	
 	public TestBullet(Enemy e, int damage, int[] spawnPoint) {

@@ -1,18 +1,14 @@
 package projectiles;
 
-import util.DebuffStatusType;
-
-import com.badlogic.gdx.graphics.Texture;
-
 import enemies.Enemy;
+import enemies.SlowDebuff;
 
 public class SlowBullet extends Projectile {
 	public SlowBullet() {
 		this.speed = 5;
 		this.sprite = "bullets/iceBullet.png";
 		this.name = "Slow Bullet";
-		this.debuff = DebuffStatusType.SLOW;
-		this.debuffDuration = 3; //Seconds
+		this.debuff = new SlowDebuff((float)3, (float).3);
 	}
 	
 	public SlowBullet(Enemy e, int damage, int[] spawnPoint) {
