@@ -27,6 +27,8 @@ public class tetrisTD extends Game {
 	private Level currLevel;
 	protected GameOverlay gfxUserInterface;
 	protected TextureManager textureManager;
+	
+	public int[] currMouseLoc = new int[2];
 
 	public Level getCurrLevel() {
 		return currLevel;
